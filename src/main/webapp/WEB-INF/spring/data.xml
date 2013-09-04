@@ -16,10 +16,10 @@
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
 	<!-- Менеджер транзакций -->
-	<bean id="transactionManager"
+	<!--bean id="transactionManager"
 		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
+	</bean-->
 
 	<bean id="messageSource"
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
@@ -37,11 +37,11 @@
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
 		p:driverClassName="${jdbc.driverClassName}" 
 		p:url="${jdbc.databaseurl}"
-		p:username="${jdbc.username}" 
+		p:username="${jdbc.username}"
 		p:password="${jdbc.password}" />
 
 	<!-- Настройки фабрики сессий Хибернейта -->
-	<bean id="sessionFactory"
+	<!-- bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="configLocation">
@@ -57,6 +57,6 @@
 				<prop key="hibernate.connection.charSet">UTF-8</prop>
 			</props>
 		</property>
-	</bean>
+	</bean -->
 
 </beans>
