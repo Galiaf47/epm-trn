@@ -17,7 +17,15 @@ http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 		<remember-me />
 	</http>
 
-	<authentication-manager>
+	<authentication-manager alias="authenticationManager">
+		<authentication-provider user-service-ref="authService">
+			<password-encoder hash="md5" base64="true" />
+		</authentication-provider>
+	</authentication-manager>
+
+	<beans:bean id="authService" class="com.epam.trn.service.AuthService" />
+
+<!-- 	<authentication-manager>
 		<authentication-provider>
 			<jdbc-user-service data-source-ref="dataSource"
 				users-by-username-query="
@@ -28,5 +36,5 @@ http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 		      where u.id = ur.user_id and u.login =?  " />
 		</authentication-provider>
 	</authentication-manager>
-
+ -->
 </beans:beans>
