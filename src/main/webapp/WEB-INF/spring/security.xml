@@ -23,7 +23,7 @@ http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 		</authentication-provider>
 	</authentication-manager>
 
-	<beans:bean id="authService" class="com.epam.trn.service.AuthService" />
+	<beans:bean id="authService" class="com.epam.trn.security.AuthService" />
 
 <!-- 	<authentication-manager>
 		<authentication-provider>
