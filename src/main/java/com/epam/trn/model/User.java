@@ -1,6 +1,7 @@
 package com.epam.trn.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class User {
@@ -43,11 +44,15 @@ public class User {
 	}
 
 	public List<UserRole> getRoles() {
-		return roles;
+		return (List<UserRole>) Collections.unmodifiableCollection(roles);
 	}
 
-	public void setRoles(List<UserRole> roles) {
-		this.roles = roles;
+	public void addRole(UserRole role) {
+		this.roles.add(role);
+	}
+
+	public void removeRole(UserRole role) {
+		this.roles.remove(role);
 	}
 
 }

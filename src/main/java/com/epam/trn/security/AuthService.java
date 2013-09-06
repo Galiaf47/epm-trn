@@ -3,6 +3,7 @@ package com.epam.trn.security;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +37,11 @@ public class AuthService implements UserDetailsService, Serializable {
 	}
 
 	private Collection<GrantedAuthority> getGrantedAuthority(User user) {
+		List<UserRole> userRoles = userDao.getUserRoles(user.getId());
 		Set<GrantedAuthority> result = new HashSet<GrantedAuthority>();
-		for (UserRole role : user.getRoles()) {
+		for (UserRole role : userRoles) {
 			result.add(new SimpleGrantedAuthority(role.getName()));
+			user.addRole(role);
 		}
 		return result;
 	}
