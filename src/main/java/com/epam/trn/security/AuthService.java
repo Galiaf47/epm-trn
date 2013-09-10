@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,5 +46,17 @@ public class AuthService implements UserDetailsService, Serializable {
 			user.addRole(role);
 		}
 		return result;
+	}
+
+	public static boolean hasAdminRole() {
+		Authentication auth = SecurityContextHolder.getContext()
+				.getAuthentication();
+		Collection<? extends GrantedAuthority> authorities = auth
+				.getAuthorities();
+		for (GrantedAuthority grantedAuthority : authorities) {
+			if ("ROLE_ADMIN".equals(grantedAuthority.getAuthority()))
+				return true;
+		}
+		return false;
 	}
 }

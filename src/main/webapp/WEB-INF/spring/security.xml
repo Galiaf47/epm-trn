@@ -8,7 +8,7 @@ http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 	<http access-denied-page="/error403.jsp">
 		<intercept-url pattern="/index*" access="ROLE_USER" />
 		<intercept-url pattern="/add*" access="ROLE_USER" />
-		<intercept-url pattern="/delete/*" access="ROLE_ADMIN" />
+		<intercept-url pattern="/admin" access="ROLE_ADMIN" />
 		<form-login login-page="/login.jsp" default-target-url="/index"
 			authentication-failure-url="/login.jsp?error=true" />
 		<logout logout-url="/logout" logout-success-url="/index" />
