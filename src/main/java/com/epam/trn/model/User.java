@@ -6,10 +6,13 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 @XmlRootElement
 public class User {
 	private Integer id;
 	private String login;
+	@JsonIgnore
 	private String password;
 	private Boolean isActive;
 	private List<UserRole> roles = new ArrayList<UserRole>();
@@ -47,7 +50,7 @@ public class User {
 	}
 
 	public List<UserRole> getRoles() {
-		return (List<UserRole>) Collections.unmodifiableCollection(roles);
+		return roles;
 	}
 
 	public void addRole(UserRole role) {
