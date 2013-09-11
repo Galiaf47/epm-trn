@@ -39,8 +39,9 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
 	@Override
 	public List<User> getUsers() {
-		// TODO Auto-generated method stub
-		return null;
+		String sql = "SELECT ID, LOGIN, PASSWORD FROM USERS";
+		return (List<User>) getJdbcTemplate().query(sql, new Object[] {},
+				new UserRowMapper());
 	}
 
 	@Override
