@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.epam.trn.model.User;
 import com.epam.trn.service.UsersService;
-import com.epam.trn.service.UsersService.UsersList;
+import com.epam.trn.web.grid.Grid;
 
 @Controller
 public class UsersController {
@@ -22,8 +22,7 @@ public class UsersController {
 	@RequestMapping(value = "/users", method = RequestMethod.GET)
 	@JsonSerialize
 	public @ResponseBody()
-	User[] getUsers(HttpServletRequest req) {
-		UsersList users = usersService.getUsers();
-		return users.toArray(new User[users.size()]);
+	Grid<User> getUsers(HttpServletRequest req) {
+		return usersService.getUsersGrid();
 	}
 }
