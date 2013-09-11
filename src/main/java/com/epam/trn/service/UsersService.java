@@ -16,7 +16,6 @@ public class UsersService {
 
 	public UsersList getUsers() {
 		return new UsersList(userDao.getUsers());
-
 	}
 
 	public class UsersList extends ArrayList<User> {
