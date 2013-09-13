@@ -6,11 +6,12 @@ import java.util.List;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.stereotype.Service;
 
 import com.epam.trn.dao.UserDao;
 import com.epam.trn.model.User;
 import com.epam.trn.model.UserRole;
-
+@Service
 public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	public void insert(User user) {
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.epam.trn.web.services;
+package com.epam.trn.service;
 
 import org.springframework.stereotype.Service;
 
