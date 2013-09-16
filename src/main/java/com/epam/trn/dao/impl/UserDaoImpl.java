@@ -4,12 +4,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import com.epam.trn.dao.UserDao;
 import com.epam.trn.model.User;
 import com.epam.trn.model.UserRole;
+import com.epam.trn.model.UsersPage;
 
 public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	public void insert(User user) {
@@ -42,6 +44,24 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		String sql = "SELECT ID, LOGIN, PASSWORD FROM USERS";
 		return (List<User>) getJdbcTemplate().query(sql, new Object[] {},
 				new UserRowMapper());
+	}
+
+	@Override
+	public UsersPage getUsersPage(String filters, Integer page, Integer rows, String sortBy, String sortDirrection) {
+		String countSql = "SELECT COUNT(*) FROM USERS";
+		String sql = "SELECT ID, LOGIN, PASSWORD FROM USERS ORDER BY ? LIMIT ? offset ?";
+		
+		UsersPage result = new UsersPage();
+		int count = getJdbcTemplate().queryForInt(countSql);
+		int offset = rows * (page - 1);
+		int totalPages = (int)Math.ceil((double)count / rows); 
+
+		result.setRows(getJdbcTemplate().query(sql, new Object[] {"login", rows, offset}, new UserRowMapper()));
+		result.setTotal(totalPages);
+		result.setPage(page);
+		result.setRecords(count);
+		
+		return result;
 	}
 
 	@Override
@@ -82,5 +102,4 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		}
 
 	}
-
 }
