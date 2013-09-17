@@ -40,7 +40,7 @@ public class StudentsService {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST/*DELETE*/, value="/students")
-	public void getStudent() {
+	public void getStudent(@RequestParam String id) {
 		asd = 1;
 	}
 }

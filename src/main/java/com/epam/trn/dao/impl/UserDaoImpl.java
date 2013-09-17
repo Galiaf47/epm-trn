@@ -48,15 +48,16 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
 	@Override
 	public UsersPage getUsersPage(String filters, Integer page, Integer rows, String sortBy, String sortDirrection) {
+		String sortStatement = "ORDER BY " + sortBy + ' ' + sortDirrection;
 		String countSql = "SELECT COUNT(*) FROM USERS";
-		String sql = "SELECT ID, LOGIN, PASSWORD FROM USERS ORDER BY ? LIMIT ? offset ?";
+		String sql = "SELECT ID, LOGIN, PASSWORD FROM USERS " + sortStatement + " LIMIT ? offset ?";
 		
 		UsersPage result = new UsersPage();
 		int count = getJdbcTemplate().queryForInt(countSql);
 		int offset = rows * (page - 1);
 		int totalPages = (int)Math.ceil((double)count / rows); 
-
-		result.setRows(getJdbcTemplate().query(sql, new Object[] {"login", rows, offset}, new UserRowMapper()));
+		
+		result.setRows(getJdbcTemplate().query(sql, new Object[] {rows, offset}, new UserRowMapper()));
 		result.setTotal(totalPages);
 		result.setPage(page);
 		result.setRecords(count);
