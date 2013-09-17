@@ -2,9 +2,14 @@ package com.epam.trn.dao.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import com.epam.trn.dao.UserDao;
@@ -19,7 +24,6 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 				+ "(LOGIN, PASSWORD) VALUES (?, ?, ?)";
 
 		getJdbcTemplate().update(sql, user.getLogin(), user.getPassword());
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -106,6 +110,16 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	public Boolean deleteUser(long id) {
 		String sql = "DELETE FROM USERS WHERE ID = ?";
 		int result = getJdbcTemplate().update(sql, new Object[]{id});
+		return result > 0;
+	}
+
+	@Override
+	public Boolean deleteUsers(ArrayList<Long> ids) {
+		String sql = "DELETE FROM USERS WHERE ID IN (:ids)";
+		NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("ids", ids);
+		int result = namedParameterJdbcTemplate.update(sql, parameters);
 		return result > 0;
 	}
 }

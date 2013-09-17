@@ -1,5 +1,6 @@
 package com.epam.trn.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.epam.trn.model.User;
@@ -18,6 +19,8 @@ public interface UserDao {
 	public UsersPage getUsersPage(String filters, Integer page, Integer rows, String sortBy, String sortDirrection);
 	
 	public Boolean deleteUser(long id);
+	
+	public Boolean deleteUsers(ArrayList<Long> ids);
 
 	public List<UserRole> getUserRoles(Integer userId);
 

@@ -3,6 +3,8 @@
  */
 package com.epam.trn.service;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +37,21 @@ public class StudentsService {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST/*DELETE*/, value="/students")
-	public @ResponseBody Boolean getStudent(@RequestParam long id) {
-		return userDao.deleteUser(id);
+	public @ResponseBody Boolean getStudent(@RequestParam String id) {
+		Boolean result = false;
+		
+		if(id != null) {
+			String[] parsedIds = id.split(",");
+			int count = parsedIds.length;
+			ArrayList<Long> ids = new ArrayList<Long>();
+			
+			for(int i = 0; i < count; i++) {
+				ids.add(Long.parseLong(parsedIds[i]));
+			}
+			
+			result = userDao.deleteUsers(ids);
+		}
+		
+		return result;
 	}
 }

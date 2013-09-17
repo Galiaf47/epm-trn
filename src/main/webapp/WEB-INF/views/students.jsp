@@ -30,6 +30,8 @@
 			   	pager: '#pager2',
 			  	sortname: 'id', 
 			  	viewrecords: true, 
+			  	multiselect: true,
+	            multiboxonly: true,
 			  	sortorder: 'desc', 
 			  	caption: 'My First Grid'
 	  		});
