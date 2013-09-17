@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
@@ -101,5 +100,12 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 			return user;
 		}
 
+	}
+
+	@Override
+	public Boolean deleteUser(long id) {
+		String sql = "DELETE FROM USERS WHERE ID = ?";
+		int result = getJdbcTemplate().update(sql, new Object[]{id});
+		return result > 0;
 	}
 }

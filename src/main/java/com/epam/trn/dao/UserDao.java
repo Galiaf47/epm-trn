@@ -16,6 +16,8 @@ public interface UserDao {
 	public List<User> getUsers();
 	
 	public UsersPage getUsersPage(String filters, Integer page, Integer rows, String sortBy, String sortDirrection);
+	
+	public Boolean deleteUser(long id);
 
 	public List<UserRole> getUserRoles(Integer userId);
 

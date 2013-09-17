@@ -3,9 +3,6 @@
  */
 package com.epam.trn.service;
 
-import java.io.Serializable;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.epam.trn.dao.UserDao;
-import com.epam.trn.model.User;
 import com.epam.trn.model.UsersPage;
 
 /**
@@ -23,7 +19,6 @@ import com.epam.trn.model.UsersPage;
  */
 @Controller
 public class StudentsService {
-	private static Integer asd = 0;
 	@Autowired
 	private UserDao userDao;
 
@@ -40,7 +35,7 @@ public class StudentsService {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST/*DELETE*/, value="/students")
-	public void getStudent(@RequestParam String id) {
-		asd = 1;
+	public @ResponseBody Boolean getStudent(@RequestParam long id) {
+		return userDao.deleteUser(id);
 	}
 }
