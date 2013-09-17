@@ -20,6 +20,11 @@ public class MainController {
 		return "admin";
 	}
 
+	@RequestMapping("/studentpage")
+	public String getStudentPage(Map<String, Object> map) {
+		return "students";
+	}
+
 	@RequestMapping("/")
 	public String home() {
 		if (AuthService.hasAdminRole())
