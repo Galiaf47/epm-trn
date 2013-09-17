@@ -7,16 +7,54 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
-<%-- <title><spring:message code="label.title" /></title> --%>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>EPM-TRN</title>
+<link rel="stylesheet" type="text/css" media="screen" href="resources/css/ui.jqgrid.css" />
+<link href="resources/css/smoothness/jquery-ui-1.10.3.custom.css" rel="stylesheet">
+
+<script src="resources/js/jquery-2.0.3.min.js" type="text/javascript"></script>
+<script src="resources/js/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+<script src="resources/js/i18n/grid.locale-ru.js" type="text/javascript"></script>
+<script src="resources/js/jquery.jqGrid.min.js" type="text/javascript"></script>
+
+<script>
+
+$(function() {
+    $("#tabs" ).tabs({
+      beforeLoad: function( event, ui ) {
+        ui.jqXHR.error(function() {
+          ui.panel.html(
+            "Couldn't load this tab." );
+        });
+      }
+    });
+  });
+  
+  </script>
+
+
 </head>
 <body>
-	</div>
-	Hello
-	</div>
+	
 	<div>
-		<a href="<c:url value="/logout" />"> <spring:message
-				code="label.logout" />
+		<a href="<c:url value="/logout" />"> <spring:message code="label.logout" />
 		</a>
 	</div>
+	
+	
+<div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">Setup</a></li>
+    <li><a href="ajax/content1.html">Courses</a></li>
+    <li><a href="ajax/content2.html">Students</a></li>
+    <li><a href="ajax/content3-slow.html">Tutors</a></li>
+    <li><a href="ajax/content4-broken.html">Timetable</a></li>
+  </ul>
+  <div id="tabs-1">
+    <p></p>
+  </div>
+</div>
+	
+	
 </body>
 </html>

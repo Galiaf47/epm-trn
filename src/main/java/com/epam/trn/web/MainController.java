@@ -23,8 +23,8 @@ public class MainController {
 	@RequestMapping("/")
 	public String home() {
 		if (AuthService.hasAdminRole())
-			return "redirect:/index";
-		else
 			return "redirect:/admin";
+		else
+			return "redirect:/index";
 	}
 }
