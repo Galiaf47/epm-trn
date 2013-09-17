@@ -6,12 +6,11 @@ import java.util.List;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
-import org.springframework.stereotype.Service;
 
 import com.epam.trn.dao.UserDao;
 import com.epam.trn.model.User;
 import com.epam.trn.model.UserRole;
-@Service
+
 public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	public void insert(User user) {
 
@@ -37,12 +36,11 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> getUsers() {
 		String sql = "SELECT ID, LOGIN, PASSWORD FROM USERS";
-		return (List<User>) getJdbcTemplate().query(sql, new Object[] {},
-				new UserRowMapper());
+		return (List<User>) getJdbcTemplate().query(sql, new Object[] {}, new UserRowMapper());
 	}
 
 	@Override
