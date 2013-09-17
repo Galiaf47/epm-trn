@@ -9,8 +9,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf8">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>EPM-TRN</title>
-<link rel="stylesheet" type="text/css" media="screen" href="resources/css/ui.jqgrid.css" />
-<link href="resources/css/smoothness/jquery-ui-1.10.3.custom.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" media="screen" href="resources/redmondcss/ui.jqgrid.css" />
+<link href="resources/redmond/css/jquery-ui-1.10.3.custom.css" rel="stylesheet">
 
 <script src="resources/js/jquery-2.0.3.min.js" type="text/javascript"></script>
 <script src="resources/js/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
