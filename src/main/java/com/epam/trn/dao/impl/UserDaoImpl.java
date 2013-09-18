@@ -3,9 +3,7 @@ package com.epam.trn.dao.impl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,7 +13,7 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import com.epam.trn.dao.UserDao;
 import com.epam.trn.model.User;
 import com.epam.trn.model.UserRole;
-import com.epam.trn.model.UsersPage;
+import com.epam.trn.web.grid.impl.SimpleGrid;
 
 public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	public void insert(User user) {
@@ -49,17 +47,16 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	}
 
 	@Override
-	public UsersPage getUsersPage(String filters, Integer page, Integer rows, String sortBy, String sortDirrection) {
+	public SimpleGrid<User> getUsersPage(String filters, Integer page, Integer rows, String sortBy, String sortDirrection) {
 		String sortStatement = "ORDER BY " + sortBy + ' ' + sortDirrection;
 		String countSql = "SELECT COUNT(*) FROM USERS";
 		String sql = "SELECT ID, LOGIN, PASSWORD FROM USERS " + sortStatement + " LIMIT ? offset ?";
 		
-		UsersPage result = new UsersPage();
 		int count = getJdbcTemplate().queryForInt(countSql);
 		int offset = rows * (page - 1);
 		int totalPages = (int)Math.ceil((double)count / rows); 
 		
-		result.setRows(getJdbcTemplate().query(sql, new Object[] {rows, offset}, new UserRowMapper()));
+		SimpleGrid<User> result = new SimpleGrid<User>(getJdbcTemplate().query(sql, new Object[] {rows, offset}, new UserRowMapper()));
 		result.setTotal(totalPages);
 		result.setPage(page);
 		result.setRecords(count);

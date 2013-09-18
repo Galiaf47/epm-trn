@@ -4,16 +4,20 @@ import java.util.List;
 
 public interface Grid<T> {
 
-	String getId();
+	public Integer getRecords();//total records
 
-	int getRows();
+	//public void setRecords(Integer records);
 
-	int getPage();
+	public Integer getTotal();//total pages
 
-	List<T> getRecords();
+	//public void setTotal(Integer total);
 
-	int getTotal();
+	public Integer getPage();//current page
 
-	boolean getRepeatedItems();
+	//public void setPage(Integer page);
+
+	public List<T> getRows();//rows for current page
+
+	//public void setRows(List<T> rows);
 
 }

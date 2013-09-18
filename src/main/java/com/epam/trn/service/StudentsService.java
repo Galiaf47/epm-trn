@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.epam.trn.dao.UserDao;
-import com.epam.trn.model.UsersPage;
+import com.epam.trn.model.User;
+import com.epam.trn.web.grid.impl.SimpleGrid;
 
 /**
  * @author Siarhei Klimuts
@@ -25,7 +26,7 @@ public class StudentsService {
 	private UserDao userDao;
 
 	@RequestMapping(method=RequestMethod.GET, value="/students", headers="Accept=application/json")
-	public @ResponseBody UsersPage getStudents(
+	public @ResponseBody SimpleGrid<User> getStudents(
 			@RequestParam("_search") Boolean search,
     		@RequestParam(value="filters", required=false) String filters,
     		@RequestParam(value="page", required=false) Integer page,

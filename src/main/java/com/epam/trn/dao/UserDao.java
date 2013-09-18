@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.epam.trn.model.User;
 import com.epam.trn.model.UserRole;
-import com.epam.trn.model.UsersPage;
+import com.epam.trn.web.grid.impl.SimpleGrid;
 
 public interface UserDao {
 	public void insert(User user);
@@ -16,7 +16,7 @@ public interface UserDao {
 
 	public List<User> getUsers();
 	
-	public UsersPage getUsersPage(String filters, Integer page, Integer rows, String sortBy, String sortDirrection);
+	public SimpleGrid<User> getUsersPage(String filters, Integer page, Integer rows, String sortBy, String sortDirrection);
 	
 	public Boolean deleteUser(long id);
 	

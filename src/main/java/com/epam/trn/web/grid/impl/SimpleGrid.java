@@ -1,68 +1,52 @@
 package com.epam.trn.web.grid.impl;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.epam.trn.web.grid.Grid;
 
-public class SimpleGrid<T> implements Grid<T> {
-	private String id = "id";
-	private int rows;
-	private int page = 1;
-	private List<T> records;
-	private int total;
-	private boolean repeatedItems;
+public class SimpleGrid<T> implements Serializable, Grid<T> {
 
-	public SimpleGrid(List<T> records) {
-		this.records = records;
-		this.total = this.rows = records.size();
+	private static final long serialVersionUID = -1588030058563583602L;
+	private Integer records;
+	private Integer total;
+	private Integer page;
+	private List<T> rows;
+
+	public SimpleGrid(List<T> rows) {
+		setRows(rows);
 	}
-
-	public int getRows() {
-		return rows;
-	}
-
-	public void setRows(int rows) {
-		this.rows = rows;
-	}
-
-	public int getPage() {
-		return page;
-	}
-
-	public void setPage(int page) {
-		this.page = page;
-	}
-
-	public List<T> getRecords() {
+	
+	public Integer getRecords() {
 		return records;
 	}
 
-	public void setRecords(List<T> records) {
+	public void setRecords(Integer records) {
 		this.records = records;
 	}
 
-	public int getTotal() {
+	public Integer getTotal() {
 		return total;
 	}
 
-	public void setTotal(int total) {
+	public void setTotal(Integer total) {
 		this.total = total;
 	}
 
-	public boolean getRepeatedItems() {
-		return repeatedItems;
+	public Integer getPage() {
+		return page;
 	}
 
-	public void setRepeatedItems(boolean repeatedItems) {
-		this.repeatedItems = repeatedItems;
+	public void setPage(Integer page) {
+		this.page = page;
 	}
 
-	public String getId() {
-		return id;
+	public List<T> getRows() {
+		return rows;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setRows(List<T> rows) {
+		this.rows = rows;
 	}
 
 }
