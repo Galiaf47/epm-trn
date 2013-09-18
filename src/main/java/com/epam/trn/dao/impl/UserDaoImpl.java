@@ -27,7 +27,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public User findByLogin(String login) {
-		String sql = "SELECT ID, LOGIN, PASSWORD FROM USERS  WHERE LOGIN = ?";
+		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE FROM USERS  WHERE LOGIN = ?";
 		User user = ((User) getJdbcTemplate().queryForObject(sql,
 				new Object[] { login }, new UserRowMapper()));
 
@@ -42,7 +42,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
 	@Override
 	public List<User> getUsers() {
-		String sql = "SELECT ID, LOGIN, PASSWORD FROM USERS";
+		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE FROM USERS";
 		return (List<User>) getJdbcTemplate().query(sql, new Object[] {}, new UserRowMapper());
 	}
 
