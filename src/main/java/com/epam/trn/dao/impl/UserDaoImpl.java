@@ -2,14 +2,20 @@ package com.epam.trn.dao.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import com.epam.trn.dao.UserDao;
 import com.epam.trn.model.User;
 import com.epam.trn.model.UserRole;
+import com.epam.trn.model.UsersPage;
 
 public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	public void insert(User user) {
@@ -18,7 +24,6 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 				+ "(LOGIN, PASSWORD) VALUES (?, ?, ?)";
 
 		getJdbcTemplate().update(sql, user.getLogin(), user.getPassword());
-
 	}
 
 	@SuppressWarnings("unchecked")
@@ -36,11 +41,30 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public List<User> getUsers() {
 		String sql = "SELECT ID, LOGIN, PASSWORD FROM USERS";
 		return (List<User>) getJdbcTemplate().query(sql, new Object[] {}, new UserRowMapper());
+	}
+
+	@Override
+	public UsersPage getUsersPage(String filters, Integer page, Integer rows, String sortBy, String sortDirrection) {
+		String sortStatement = "ORDER BY " + sortBy + ' ' + sortDirrection;
+		String countSql = "SELECT COUNT(*) FROM USERS";
+		String sql = "SELECT ID, LOGIN, PASSWORD FROM USERS " + sortStatement + " LIMIT ? offset ?";
+		
+		UsersPage result = new UsersPage();
+		int count = getJdbcTemplate().queryForInt(countSql);
+		int offset = rows * (page - 1);
+		int totalPages = (int)Math.ceil((double)count / rows); 
+		
+		result.setRows(getJdbcTemplate().query(sql, new Object[] {rows, offset}, new UserRowMapper()));
+		result.setTotal(totalPages);
+		result.setPage(page);
+		result.setRecords(count);
+		
+		return result;
 	}
 
 	@Override
@@ -82,4 +106,20 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
 	}
 
+	@Override
+	public Boolean deleteUser(long id) {
+		String sql = "DELETE FROM USERS WHERE ID = ?";
+		int result = getJdbcTemplate().update(sql, new Object[]{id});
+		return result > 0;
+	}
+
+	@Override
+	public Boolean deleteUsers(ArrayList<Long> ids) {
+		String sql = "DELETE FROM USERS WHERE ID IN (:ids)";
+		NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("ids", ids);
+		int result = namedParameterJdbcTemplate.update(sql, parameters);
+		return result > 0;
+	}
 }

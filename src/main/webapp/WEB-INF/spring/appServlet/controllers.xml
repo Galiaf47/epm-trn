@@ -9,5 +9,18 @@
 
 	<!-- Определяем папку, в которой будем искать веб компоненты (контроллеры)-->
 	<context:component-scan base-package="com.epam.trn.web" />
-	 
+	<context:component-scan base-package="com.epam.trn.service" />
+	
+	<!-- Ну, мы ведь с JSON договорились работать -->
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+	   <property name="messageConverters">
+	       <list>
+	           <ref bean="jsonConverter" />
+	       </list>
+	   </property>
+	</bean>
+
+	<bean id="jsonConverter" class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+	   <property name="supportedMediaTypes" value="application/json" />
+	</bean>	 
 </beans>
