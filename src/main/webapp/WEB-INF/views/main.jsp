@@ -46,7 +46,7 @@ $(function() {
   <ul>
     <li><a href="#tabs-1">Setup</a></li>
     <li><a href="ajax/content1.html">Courses</a></li>
-    <li><a href="ajax/content2.html">Students</a></li>
+    <li><a href="studentpage">Students</a></li>
     <li><a href="ajax/content3-slow.html">Tutors</a></li>
     <li><a href="ajax/content4-broken.html">Timetable</a></li>
   </ul>
