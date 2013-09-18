@@ -21,26 +21,34 @@
 	  		    editurl:"students",
 				datatype: "json",
 			  	mtype: "GET", 
-			  	colNames: ['id', 'login'], 
-			  	colModel: [ {name: 'id', index: 'id', width: 590}, 
-			              {name: 'login', index: 'login'}
+			  	colNames: ['id', 'login', 'password', 'firstName', 'lastName', 'address', 'phone', 'isActive'], 
+			  	colModel: [ 
+	            	{name: 'id', index: 'id', editable: false}, 
+			        {name: 'login', index: 'login', editable: true},
+			        {name: 'password', index: 'password', hidden: false, editable: true},
+			        {name: 'firstName', index: 'firstName', editable: true},
+			        {name: 'lastName', index: 'lastName', editable: true},
+			        {name: 'address', index: 'address', editable: true},
+			        {name: 'phone', index: 'phone', editable: true},
+			        {name: 'isActive', index: 'isActive', editable: true}
 				],
 				rowNum:10,
 			   	rowList:[10,20,30],
-			   	pager: '#pager2',
+			   	pager: '#pager',
 			  	sortname: 'id', 
 			  	viewrecords: true, 
 			  	multiselect: true,
 	            multiboxonly: true,
 			  	sortorder: 'desc', 
-			  	caption: 'My First Grid'
+			  	caption: 'Students'
 	  		});
-			$("#theGrid").jqGrid('navGrid','#pager2',{edit:true,add:true,del:true});
+			
+			$("#theGrid").jqGrid('navGrid','#pager',{edit: true, add: true, del: true}, {url: 'students/update'}, {url: 'students/create'}, {url: 'students/delete'});
 		});
 	</script>	
 </head>
 <body>
 	<table id="theGrid"></table>
-	<div id="pager2"></div>
+	<div id="pager"></div>
 </body>
 </html>

@@ -20,11 +20,13 @@ import com.epam.trn.web.grid.impl.SimpleGrid;
  * @author Siarhei Klimuts
  *
  */
+//TODO: configure to RESTful (GET, POST, PUT, DELETE)
 @Controller
 public class StudentsService {
+	
 	@Autowired
 	private UserDao userDao;
-
+	
 	@RequestMapping(method=RequestMethod.GET, value="/students", headers="Accept=application/json")
 	public @ResponseBody SimpleGrid<User> getStudents(
 			@RequestParam("_search") Boolean search,
@@ -37,22 +39,70 @@ public class StudentsService {
 		return userDao.getUsersPage(null, page, rows, sortBy, sortDirrection);
 	}
 	
-	@RequestMapping(method=RequestMethod.POST/*DELETE*/, value="/students")
-	public @ResponseBody Boolean getStudent(@RequestParam String id) {
-		Boolean result = false;
+	@RequestMapping(method=RequestMethod.POST, value="/students/create", headers="Accept=application/json")
+	public @ResponseBody Boolean createStudent(
+			@RequestParam String login,
+			@RequestParam String password,
+			@RequestParam String firstName,
+			@RequestParam String lastName,
+			@RequestParam String address,
+			@RequestParam String phone,
+			@RequestParam Boolean isActive) {
 		
-		if(id != null) {
-			String[] parsedIds = id.split(",");
-			int count = parsedIds.length;
-			ArrayList<Long> ids = new ArrayList<Long>();
+		User newUser = new User();
+		newUser.setLogin(login);
+		newUser.setPassword(password);
+		newUser.setFirstName(firstName);
+		newUser.setLastName(lastName);
+		newUser.setAddress(address);
+		newUser.setPhone(phone);
+		newUser.setIsActive(isActive);
+		
+		userDao.insert(newUser);
+		return true;
+	}
+	
+	@RequestMapping(method=RequestMethod.POST, value="/students/update", headers="Accept=application/json")
+	public @ResponseBody Boolean updateStudent(
+			@RequestParam long id,
+			@RequestParam String login,
+			@RequestParam String password,
+			@RequestParam String firstName,
+			@RequestParam String lastName,
+			@RequestParam String address,
+			@RequestParam String phone,
+			@RequestParam Boolean isActive) {
+		
+		boolean result = false;
+		User user = userDao.findById(id);
+		
+		if(user != null) {
+			user.setLogin(login);
+			user.setPassword(password);
+			user.setFirstName(firstName);
+			user.setLastName(lastName);
+			user.setAddress(address);
+			user.setPhone(phone);
+			user.setIsActive(isActive);
 			
-			for(int i = 0; i < count; i++) {
-				ids.add(Long.parseLong(parsedIds[i]));
-			}
-			
-			result = userDao.deleteUsers(ids);
+			result = userDao.updateUser(user);
 		}
 		
 		return result;
+	}
+	
+	@RequestMapping(method=RequestMethod.POST, value="/students/delete", headers="Accept=application/json")
+	public @ResponseBody Boolean deleteStudent(
+			@RequestParam String id) {
+		
+		String[] parsedIds = id.split(",");
+		int count = parsedIds.length;
+		ArrayList<Long> ids = new ArrayList<Long>();
+		
+		for(int i = 0; i < count; i++) {
+			ids.add(Long.parseLong(parsedIds[i]));
+		}
+		
+		return userDao.deleteUsers(ids);
 	}
 }

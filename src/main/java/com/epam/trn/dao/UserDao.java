@@ -12,7 +12,7 @@ public interface UserDao {
 
 	public User findByLogin(String username);
 
-	public User findById(String id);
+	public User findById(long id);
 
 	public List<User> getUsers();
 	
@@ -21,6 +21,8 @@ public interface UserDao {
 	public Boolean deleteUser(long id);
 	
 	public Boolean deleteUsers(ArrayList<Long> ids);
+	
+	public Boolean updateUser(User user);
 
 	public List<UserRole> getUserRoles(Integer userId);
 

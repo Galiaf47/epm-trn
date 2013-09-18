@@ -19,9 +19,9 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	public void insert(User user) {
 
 		String sql = "INSERT INTO USERS "
-				+ "(LOGIN, PASSWORD) VALUES (?, ?, ?)";
+				+ "(LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-		getJdbcTemplate().update(sql, user.getLogin(), user.getPassword());
+		getJdbcTemplate().update(sql, user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPhone(), user.getIsActive());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -35,9 +35,9 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	}
 
 	@Override
-	public User findById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+	public User findById(long id) {
+		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE FROM USERS WHERE ID = ?";
+		return (User)getJdbcTemplate().queryForObject(sql, new Object[] {id}, new UserRowMapper());
 	}
 
 	@Override
@@ -48,9 +48,10 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
 	@Override
 	public SimpleGrid<User> getUsersPage(String filters, Integer page, Integer rows, String sortBy, String sortDirrection) {
+		//TODO: 
 		String sortStatement = "ORDER BY " + sortBy + ' ' + sortDirrection;
 		String countSql = "SELECT COUNT(*) FROM USERS";
-		String sql = "SELECT ID, LOGIN, PASSWORD FROM USERS " + sortStatement + " LIMIT ? offset ?";
+		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE FROM USERS " + sortStatement + " LIMIT ? offset ?";
 		
 		int count = getJdbcTemplate().queryForInt(countSql);
 		int offset = rows * (page - 1);
@@ -98,9 +99,13 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 			user.setId(rs.getInt("ID"));
 			user.setLogin(rs.getString("LOGIN"));
 			user.setPassword(rs.getString("PASSWORD"));
+			user.setFirstName(rs.getString("FIRSTNAME"));
+			user.setLastName(rs.getString("LASTNAME"));
+			user.setAddress(rs.getString("ADDRESS"));
+			user.setPhone(rs.getString("PHONE"));
+			user.setIsActive(rs.getBoolean("ACTIVE"));
 			return user;
 		}
-
 	}
 
 	@Override
@@ -118,5 +123,11 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		parameters.addValue("ids", ids);
 		int result = namedParameterJdbcTemplate.update(sql, parameters);
 		return result > 0;
+	}
+	
+	@Override
+	public Boolean updateUser(User user) {
+		String sql = "UPDATE USERS SET (LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE) = (?, ?, ?, ?, ?, ?, ?) WHERE ID = ?";
+		return getJdbcTemplate().update(sql, new Object[]{user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPhone(), user.getIsActive(), user.getId()}) > 0;
 	}
 }
