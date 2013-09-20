@@ -26,14 +26,11 @@ public class AuthService implements UserDetailsService, Serializable {
 	private UserDao userDao;
 
 	@Override
-	public UserDetails loadUserByUsername(String login)
-			throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
 		User user = userDao.findByLogin(login);
 		UserDetails userDetails = null;
 		if (user != null) {
-			userDetails = new org.springframework.security.core.userdetails.User(
-					user.getLogin(), user.getPassword(),
-					getGrantedAuthority(user));
+			userDetails = new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), getGrantedAuthority(user));
 		}
 		return userDetails;
 	}
@@ -49,10 +46,8 @@ public class AuthService implements UserDetailsService, Serializable {
 	}
 
 	public static boolean hasAdminRole() {
-		Authentication auth = SecurityContextHolder.getContext()
-				.getAuthentication();
-		Collection<? extends GrantedAuthority> authorities = auth
-				.getAuthorities();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
 		for (GrantedAuthority grantedAuthority : authorities) {
 			if ("ROLE_ADMIN".equals(grantedAuthority.getAuthority()))
 				return true;
