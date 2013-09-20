@@ -63,15 +63,8 @@ public class StudentsService {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/students/update", headers="Accept=application/json")
-	public @ResponseBody Boolean updateStudent(
-			@RequestParam long id,
-			@RequestParam String login,
-			@RequestParam String password,
-			@RequestParam String firstName,
-			@RequestParam String lastName,
-			@RequestParam String address,
-			@RequestParam String phone,
-			@RequestParam Boolean isActive) {
+	public @ResponseBody Boolean updateStudent(	@RequestParam long id, @RequestParam String login, @RequestParam String password, @RequestParam String firstName,
+												@RequestParam String lastName, @RequestParam String address, @RequestParam String phone, @RequestParam Boolean isActive) {
 		
 		boolean result = false;
 		User user = userDao.findById(id);
