@@ -27,6 +27,7 @@ public class AuthService implements UserDetailsService, Serializable {
 
 	@Override
 	public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+		//TODO: find by login AND password, koz if there is no such login then we will see unexpected exception
 		User user = userDao.findByLogin(login);
 		UserDetails userDetails = null;
 		if (user != null) {

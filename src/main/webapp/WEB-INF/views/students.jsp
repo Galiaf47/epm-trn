@@ -25,7 +25,7 @@
 			  	colModel: [ 
 	            	{name: 'id', index: 'id', editable: false}, 
 			        {name: 'login', index: 'login', editable: true},
-			        {name: 'password', index: 'password', hidden: false, editable: true},
+			        {name: 'password', index: 'password', hidden: false, editable: false},
 			        {name: 'firstName', index: 'firstName', editable: true},
 			        {name: 'lastName', index: 'lastName', editable: true},
 			        {name: 'address', index: 'address', editable: true},
