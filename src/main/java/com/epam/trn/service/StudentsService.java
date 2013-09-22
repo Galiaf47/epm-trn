@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.epam.trn.dao.UserDao;
 import com.epam.trn.mailing.Mail;
 import com.epam.trn.model.User;
+import com.epam.trn.model.UserRole;
 import com.epam.trn.web.grid.impl.SimpleGrid;
 
 /**
@@ -59,6 +60,9 @@ public class StudentsService {
 		byte[] digest = MessageDigest.getInstance("MD5").digest(Utf8.encode(tempPassword));
 		String hashedPassword = Utf8.decode(Base64.encode(digest));
 		
+		UserRole role = new UserRole();
+		role.setName("ROLE_STUDENT");
+		
 		User newUser = new User();
 		newUser.setLogin(login);
 		newUser.setPassword(hashedPassword);
@@ -67,7 +71,10 @@ public class StudentsService {
 		newUser.setAddress(address);
 		newUser.setPhone(phone);
 		newUser.setIsActive(isActive);
+		newUser.addRole(role);
+
 		userDao.insert(newUser);
+		userDao.insertUserRoles(newUser);
 		
 		Mail.sendRegistrationMessage(login, login, tempPassword);
 		

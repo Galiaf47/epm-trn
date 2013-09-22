@@ -1,11 +1,14 @@
 package com.epam.trn.dao.impl;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -21,20 +24,68 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	@Autowired
 	NamedParameterJdbcTemplate template;
 	
-	public void insert(User user) {
-
-		String sql = "INSERT INTO USERS "
-				+ "(LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-		getJdbcTemplate().update(sql, user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPhone(), user.getIsActive());
+	//TODO: move classes somewhere else
+	class IdCallback implements PreparedStatementCallback<Integer> {
+		@Override
+		public Integer doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
+			int result = 0;
+			ResultSet rs = ps.executeQuery();
+		    if(rs.next()) {
+		    	result =  rs.getInt("ID");
+		    }
+		    rs.close();
+		    return result;
+		}
 	}
 
-	@SuppressWarnings("unchecked")
+	class UserRoleRowMapper implements RowMapper<UserRole> {
+		public UserRole mapRow(ResultSet rs, int rowNum) throws SQLException {
+			UserRole userRole = new UserRole();
+			userRole.setId(rs.getInt("ID"));
+			userRole.setName(rs.getString("NAME"));
+			userRole.setUserId(rs.getInt("USER_ID"));
+			return userRole;
+		}
+	}
+
+	class UserRowMapper implements RowMapper<User> {
+		public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+			User user = new User();
+			user.setId(rs.getInt("ID"));
+			user.setLogin(rs.getString("LOGIN"));
+			user.setPassword(rs.getString("PASSWORD"));
+			user.setFirstName(rs.getString("FIRSTNAME"));
+			user.setLastName(rs.getString("LASTNAME"));
+			user.setAddress(rs.getString("ADDRESS"));
+			user.setPhone(rs.getString("PHONE"));
+			user.setIsActive(rs.getBoolean("ACTIVE"));
+			return user;
+		}
+	}
+
+	@Override
+	public void insert(User user) {
+		String sql = "INSERT INTO USERS "
+				+ "(LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE) VALUES "
+				+ "(:login, :password, :firstname, :lastname, :address, :phone, :active) "
+				+ "RETURNING ID";
+		
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("login", user.getLogin());
+		parameters.addValue("password", user.getPassword());
+		parameters.addValue("firstname", user.getFirstName());
+		parameters.addValue("lastname", user.getLastName());
+		parameters.addValue("address", user.getAddress());
+		parameters.addValue("phone", user.getPhone());
+		parameters.addValue("active", user.getIsActive());
+
+		user.setId(template.execute(sql, parameters, new IdCallback()));
+	}
+
 	@Override
 	public User findByLogin(String login) {
 		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE FROM USERS  WHERE LOGIN = ?";
-		User user = ((User) getJdbcTemplate().queryForObject(sql,
-				new Object[] { login }, new UserRowMapper()));
+		User user = ((User) getJdbcTemplate().queryForObject(sql, new Object[] { login }, new UserRowMapper()));
 
 		return user;
 	}
@@ -76,41 +127,12 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		return 0;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<UserRole> getUserRoles(Integer userId) {
 		String sql = "SELECT ID, USER_ID, NAME FROM USER_ROLES  WHERE USER_ID = ?";
 		List<UserRole> userRoles = (List<UserRole>) getJdbcTemplate().query(
 				sql, new Object[] { userId }, new UserRoleRowMapper());
 		return userRoles;
-	}
-
-	@SuppressWarnings("rawtypes")
-	class UserRoleRowMapper implements RowMapper {
-		public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
-			UserRole userRole = new UserRole();
-			userRole.setId(rs.getInt("ID"));
-			userRole.setName(rs.getString("NAME"));
-			userRole.setUserId(rs.getInt("USER_ID"));
-			return userRole;
-		}
-
-	}
-
-	@SuppressWarnings("rawtypes")
-	class UserRowMapper implements RowMapper {
-		public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
-			User user = new User();
-			user.setId(rs.getInt("ID"));
-			user.setLogin(rs.getString("LOGIN"));
-			user.setPassword(rs.getString("PASSWORD"));
-			user.setFirstName(rs.getString("FIRSTNAME"));
-			user.setLastName(rs.getString("LASTNAME"));
-			user.setAddress(rs.getString("ADDRESS"));
-			user.setPhone(rs.getString("PHONE"));
-			user.setIsActive(rs.getBoolean("ACTIVE"));
-			return user;
-		}
 	}
 
 	@Override
@@ -122,17 +144,36 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
 	@Override
 	public Boolean deleteUsers(ArrayList<Long> ids) {
-		String sql = "DELETE FROM USERS WHERE ID IN (:ids)";
+		String sqlRoles = "DELETE FROM USER_ROLES WHERE USER_ID IN (:ids)";
+		String sqlUsers = "DELETE FROM USERS WHERE ID IN (:ids)";
 		
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("ids", ids);
 		
-		return template.update(sql, parameters) > 0;
+		template.update(sqlRoles, parameters);
+		return template.update(sqlUsers, parameters) > 0;
 	}
 	
 	@Override
 	public Boolean updateUser(User user) {
 		String sql = "UPDATE USERS SET (LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE) = (?, ?, ?, ?, ?, ?, ?) WHERE ID = ?";
 		return getJdbcTemplate().update(sql, new Object[]{user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPhone(), user.getIsActive(), user.getId()}) > 0;
+	}
+
+	@Override
+	public void insertUserRoles(User user) {
+		String sql = "INSERT INTO USER_ROLES (USER_ID, NAME) VALUES (:user_id, :name)";
+		
+		List<UserRole> existingsRolesList = getUserRoles(user.getId());
+		user.getRoles().removeAll(existingsRolesList);
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("user_id", user.getId());
+		
+		//TODO: batch insert or something like that
+		for(UserRole role: user.getRoles()) {
+			parameters.addValue("name", role.getName());
+			template.update(sql, parameters);
+		}
+		//TODO: return roles to user instance if required
 	}
 }

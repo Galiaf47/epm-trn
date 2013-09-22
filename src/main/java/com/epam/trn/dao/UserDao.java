@@ -24,6 +24,8 @@ public interface UserDao {
 	
 	public Boolean updateUser(User user);
 
+	public void insertUserRoles(User user);
+	
 	public List<UserRole> getUserRoles(Integer userId);
 
 	public int getTotal();
