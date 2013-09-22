@@ -35,7 +35,13 @@
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
 		p:driverClassName="${jdbc.driverClassName}" p:url="${jdbc.databaseurl}"
 		p:username="${jdbc.username}" p:password="${jdbc.password}" />
+	
+	<bean id="namedParameterJdbcTemplate" 
+		class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+		<constructor-arg ref="dataSource"/>
+	</bean>
 
+	<!-- TODO: delete after all getJdbcTemplate uses in UserDaoImpl will be replaced by NamedParameterJdbcTemplate -->
 	<bean id="userDAO" class="com.epam.trn.dao.impl.UserDaoImpl">
 		<property name="dataSource" ref="dataSource" />
 	</bean>

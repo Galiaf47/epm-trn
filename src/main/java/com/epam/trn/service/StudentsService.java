@@ -35,7 +35,7 @@ public class StudentsService {
     		@RequestParam(value="rows", required=false) Integer rows,
     		@RequestParam(value="sidx", required=false) String sortBy,
     		@RequestParam(value="sord", required=false) String sortDirrection) {
-		
+				
 		return userDao.getUsersPage(null, page, rows, sortBy, sortDirrection);
 	}
 	

@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -16,6 +17,10 @@ import com.epam.trn.model.UserRole;
 import com.epam.trn.web.grid.impl.SimpleGrid;
 
 public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
+	
+	@Autowired
+	NamedParameterJdbcTemplate template;
+	
 	public void insert(User user) {
 
 		String sql = "INSERT INTO USERS "
@@ -118,11 +123,11 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	@Override
 	public Boolean deleteUsers(ArrayList<Long> ids) {
 		String sql = "DELETE FROM USERS WHERE ID IN (:ids)";
-		NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getJdbcTemplate());
+		
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("ids", ids);
-		int result = namedParameterJdbcTemplate.update(sql, parameters);
-		return result > 0;
+		
+		return template.update(sql, parameters) > 0;
 	}
 	
 	@Override
