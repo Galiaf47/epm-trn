@@ -1,128 +1,55 @@
-<%@ page language="java" contentType="text/html; charset=utf8"
-	pageEncoding="utf8"%>
-<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Admin users page</title>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="resources/css/ui.jqgrid.css" />
-<link href="resources/css/smoothness/jquery-ui-1.10.3.custom.css"
-	rel="stylesheet">
-
-<script src="resources/js/jquery-2.0.3.min.js" type="text/javascript"></script>
-<script src="resources/js/jquery-ui-1.10.3.custom.min.js"
-	type="text/javascript"></script>
-<script src="resources/js/i18n/grid.locale-ru.js" type="text/javascript"></script>
-<script src="resources/js/jquery.jqGrid.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-	jQuery(document).ready(function() {
-		debugger;
-		jQuery("#list2").jqGrid({
-			url : 'users',
-			datatype : "json",
-			height : 250,
-			colNames : [ 'id', 'login' ],
-			colModel : [ {
-				name : 'id',
-				index : 'id',
-				width : 60,
-				sorttype : "int"
-			}, {
-				name : 'login',
-				index : 'login',
-				width : 90,
-				sorttype : "date"
-			} ],
-			caption : "Users"
+<!-- JQuery CSS -->
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.14/themes/redmond/jquery-ui.css" type="text/css" />
+<!-- jqGrid CSS -->
+<link rel="stylesheet" href="resources/css/ui.jqgrid.css" type="text/css" />
+<!-- The actual JQuery code -->
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js" ></script>
+<!-- The JQuery UI code -->
+<script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js" ></script>
+<!-- The jqGrid language file code-->
+<script type="text/javascript" src="resources/js/i18n/grid.locale-en.js" ></script>
+<!-- The actual jqGrid code -->
+<script type="text/javascript" src="resources/js/jquery.jqGrid.src.js" ></script>
+<title>Admin Users page</title>
+	<script>
+		$(document).ready(function() {
+			$("#adminGrid").jqGrid({ 
+	  			url: "users", 
+	  		    editurl:"users",
+				datatype: "json",
+			  	mtype: "GET", 
+			  	colNames: ['id', 'email', 'login', 'password', 'firstName', 'lastName', 'address', 'phone', 'isActive'], 
+			  	colModel: [ 
+	            	{name: 'id', index: 'id', editable: false}, 
+			        {name: 'email', index: 'email', editable: true},
+			        {name: 'login', index: 'login', editable: true},
+			        {name: 'password', index: 'password', hidden:true, editable: true, edittype:'password', editrules:{edithidden:true}},
+			        {name: 'firstName', index: 'firstName', editable: true},
+			        {name: 'lastName', index: 'lastName', editable: true},
+			        {name: 'address', index: 'address', editable: true},
+			        {name: 'phone', index: 'phone', editable: true},
+			        {name: 'isActive', index: 'isActive', editable: true}
+				],
+				rowNum:10,
+			   	rowList:[10,20,30],
+			   	pager: '#adminPager',
+			  	sortname: 'id', 
+			  	viewrecords: true, 
+			  	multiselect: true,
+	            multiboxonly: true,
+			  	sortorder: 'asc', 
+			  	caption: 'Users'
+	  		});
+			
+			$("#adminGrid").jqGrid('navGrid','#adminPager',{edit: true, add: true, del: true}, {url: 'users/update'}, {url: 'users/create'}, {url: 'users/delete'});
 		});
-		var mydata = [ {
-			id : "1",
-			invdate : "2007-10-01",
-			name : "test",
-			note : "note",
-			amount : "200.00",
-			tax : "10.00",
-			total : "210.00"
-		}, {
-			id : "2",
-			invdate : "2007-10-02",
-			name : "test2",
-			note : "note2",
-			amount : "300.00",
-			tax : "20.00",
-			total : "320.00"
-		}, {
-			id : "3",
-			invdate : "2007-09-01",
-			name : "test3",
-			note : "note3",
-			amount : "400.00",
-			tax : "30.00",
-			total : "430.00"
-		}, {
-			id : "4",
-			invdate : "2007-10-04",
-			name : "test",
-			note : "note",
-			amount : "200.00",
-			tax : "10.00",
-			total : "210.00"
-		}, {
-			id : "5",
-			invdate : "2007-10-05",
-			name : "test2",
-			note : "note2",
-			amount : "300.00",
-			tax : "20.00",
-			total : "320.00"
-		}, {
-			id : "6",
-			invdate : "2007-09-06",
-			name : "test3",
-			note : "note3",
-			amount : "400.00",
-			tax : "30.00",
-			total : "430.00"
-		}, {
-			id : "7",
-			invdate : "2007-10-04",
-			name : "test",
-			note : "note",
-			amount : "200.00",
-			tax : "10.00",
-			total : "210.00"
-		}, {
-			id : "8",
-			invdate : "2007-10-03",
-			name : "test2",
-			note : "note2",
-			amount : "300.00",
-			tax : "20.00",
-			total : "320.00"
-		}, {
-			id : "9",
-			invdate : "2007-09-01",
-			name : "test3",
-			note : "note3",
-			amount : "400.00",
-			tax : "30.00",
-			total : "430.00"
-		} ];
-
-		jQuery("#list2").jqGrid('navGrid', '#pager2', {
-			edit : false,
-			add : false,
-			del : false
-		});
-	});
-</script>
+	</script>	
 </head>
 <body>
-	<table id="list2"></table>
-	<div id="pager2"></div>
+	<table id="adminGrid"></table>
+	<div id="adminPager"></div>
 </body>
 </html>

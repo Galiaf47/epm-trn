@@ -13,7 +13,7 @@
 <script type="text/javascript" src="resources/js/i18n/grid.locale-en.js" ></script>
 <!-- The actual jqGrid code -->
 <script type="text/javascript" src="resources/js/jquery.jqGrid.src.js" ></script>
-<title>tit</title>
+<title>Students page</title>
 	<script>
 		$(document).ready(function() {
 			$("#theGrid").jqGrid({ 
