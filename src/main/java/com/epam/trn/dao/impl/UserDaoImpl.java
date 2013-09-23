@@ -59,6 +59,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 			user.setAddress(rs.getString("ADDRESS"));
 			user.setPhone(rs.getString("PHONE"));
 			user.setIsActive(rs.getBoolean("ACTIVE"));
+			user.setEmail(rs.getString("EMAIL"));
 			return user;
 		}
 	}
@@ -66,8 +67,8 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	@Override
 	public void insert(User user) {
 		String sql = "INSERT INTO USERS "
-				+ "(LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE) VALUES "
-				+ "(:login, :password, :firstname, :lastname, :address, :phone, :active) "
+				+ "(LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE, EMAIL) VALUES "
+				+ "(:login, :password, :firstname, :lastname, :address, :phone, :active, :email) "
 				+ "RETURNING ID";
 		
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
@@ -78,13 +79,14 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		parameters.addValue("address", user.getAddress());
 		parameters.addValue("phone", user.getPhone());
 		parameters.addValue("active", user.getIsActive());
+		parameters.addValue("email", user.getEmail());
 
 		user.setId(template.execute(sql, parameters, new IdCallback()));
 	}
 
 	@Override
 	public User findByLogin(String login) {
-		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE FROM USERS  WHERE LOGIN = ?";
+		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE, EMAIL FROM USERS  WHERE LOGIN = ?";
 		User user = ((User) getJdbcTemplate().queryForObject(sql, new Object[] { login }, new UserRowMapper()));
 
 		return user;
@@ -92,13 +94,13 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
 	@Override
 	public User findById(long id) {
-		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE FROM USERS WHERE ID = ?";
+		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE, EMAIL FROM USERS WHERE ID = ?";
 		return (User)getJdbcTemplate().queryForObject(sql, new Object[] {id}, new UserRowMapper());
 	}
 
 	@Override
 	public List<User> getUsers() {
-		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE FROM USERS";
+		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE, EMAIL FROM USERS";
 		return (List<User>) getJdbcTemplate().query(sql, new Object[] {}, new UserRowMapper());
 	}
 
@@ -107,7 +109,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		//TODO: 
 		String sortStatement = "ORDER BY " + sortBy + ' ' + sortDirrection;
 		String countSql = "SELECT COUNT(*) FROM USERS";
-		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE FROM USERS " + sortStatement + " LIMIT ? offset ?";
+		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE, EMAIL FROM USERS " + sortStatement + " LIMIT ? offset ?";
 		
 		int count = getJdbcTemplate().queryForInt(countSql);
 		int offset = rows * (page - 1);
@@ -129,7 +131,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
 	@Override
 	public List<UserRole> getUserRoles(Integer userId) {
-		String sql = "SELECT ID, USER_ID, NAME FROM USER_ROLES  WHERE USER_ID = ?";
+		String sql = "SELECT ID, USER_ID, NAME FROM USER_ROLES WHERE USER_ID = ?";
 		List<UserRole> userRoles = (List<UserRole>) getJdbcTemplate().query(
 				sql, new Object[] { userId }, new UserRoleRowMapper());
 		return userRoles;
@@ -156,8 +158,8 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	
 	@Override
 	public Boolean updateUser(User user) {
-		String sql = "UPDATE USERS SET (LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE) = (?, ?, ?, ?, ?, ?, ?) WHERE ID = ?";
-		return getJdbcTemplate().update(sql, new Object[]{user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPhone(), user.getIsActive(), user.getId()}) > 0;
+		String sql = "UPDATE USERS SET (LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE, EMAIL) = (?, ?, ?, ?, ?, ?, ?, ?) WHERE ID = ?";
+		return getJdbcTemplate().update(sql, new Object[]{user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPhone(), user.getIsActive(), user.getEmail(), user.getId()}) > 0;
 	}
 
 	@Override

@@ -18,6 +18,7 @@ public class User {
 	private String lastName;
 	private String address;
 	private String phone;
+	private String email;
 
 	private List<UserRole> roles = new ArrayList<UserRole>();
 
@@ -97,6 +98,14 @@ public class User {
 
 	public void setPhone(String phone) {
 		this.phone = phone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 }

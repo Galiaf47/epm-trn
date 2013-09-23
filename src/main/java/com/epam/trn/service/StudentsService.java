@@ -54,7 +54,8 @@ public class StudentsService {
 			@RequestParam String lastName,
 			@RequestParam String address,
 			@RequestParam String phone,
-			@RequestParam Boolean isActive) throws NoSuchAlgorithmException {
+			@RequestParam Boolean isActive,
+			@RequestParam String email) throws NoSuchAlgorithmException {
 		
 		String tempPassword = UUID.randomUUID().toString();
 		byte[] digest = MessageDigest.getInstance("MD5").digest(Utf8.encode(tempPassword));
@@ -62,6 +63,7 @@ public class StudentsService {
 		
 		UserRole role = new UserRole();
 		role.setName("ROLE_STUDENT");
+		login = email;
 		
 		User newUser = new User();
 		newUser.setLogin(login);
@@ -71,31 +73,41 @@ public class StudentsService {
 		newUser.setAddress(address);
 		newUser.setPhone(phone);
 		newUser.setIsActive(isActive);
+		newUser.setEmail(email);
 		newUser.addRole(role);
 
 		userDao.insert(newUser);
 		userDao.insertUserRoles(newUser);
 		
-		Mail.sendRegistrationMessage(login, login, tempPassword);
+		Mail.sendRegistrationMessage(email, login, tempPassword);
 		
 		return true;
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/students/update", headers="Accept=application/json")
-	public @ResponseBody Boolean updateStudent(	@RequestParam long id, @RequestParam String login, @RequestParam String password, @RequestParam String firstName,
-												@RequestParam String lastName, @RequestParam String address, @RequestParam String phone, @RequestParam Boolean isActive) {
+	public @ResponseBody Boolean updateStudent(	
+				@RequestParam long id, 
+				@RequestParam String login, 
+				//@RequestParam String password, 
+				@RequestParam String firstName,
+				@RequestParam String lastName, 
+				@RequestParam String address, 
+				@RequestParam String phone, 
+				@RequestParam Boolean isActive,
+				@RequestParam String email) {
 		
 		boolean result = false;
 		User user = userDao.findById(id);
 		
 		if(user != null) {
 			user.setLogin(login);
-			user.setPassword(password);
+			//user.setPassword(password);
 			user.setFirstName(firstName);
 			user.setLastName(lastName);
 			user.setAddress(address);
 			user.setPhone(phone);
 			user.setIsActive(isActive);
+			user.setEmail(email);
 			
 			result = userDao.updateUser(user);
 		}
@@ -104,9 +116,7 @@ public class StudentsService {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/students/delete", headers="Accept=application/json")
-	public @ResponseBody Boolean deleteStudent(
-			@RequestParam String id) {
-		
+	public @ResponseBody Boolean deleteStudent(@RequestParam String id) {
 		String[] parsedIds = id.split(",");
 		int count = parsedIds.length;
 		ArrayList<Long> ids = new ArrayList<Long>();

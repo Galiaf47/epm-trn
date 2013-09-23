@@ -11,7 +11,7 @@
 <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js" ></script>
 <!-- The jqGrid language file code-->
 <script type="text/javascript" src="resources/js/i18n/grid.locale-en.js" ></script>
-<!-- The atual jqGrid code -->
+<!-- The actual jqGrid code -->
 <script type="text/javascript" src="resources/js/jquery.jqGrid.src.js" ></script>
 <title>tit</title>
 	<script>
@@ -21,9 +21,10 @@
 	  		    editurl:"students",
 				datatype: "json",
 			  	mtype: "GET", 
-			  	colNames: ['id', 'login', 'password', 'firstName', 'lastName', 'address', 'phone', 'isActive'], 
+			  	colNames: ['id', 'email', 'login', 'password', 'firstName', 'lastName', 'address', 'phone', 'isActive'], 
 			  	colModel: [ 
 	            	{name: 'id', index: 'id', editable: false}, 
+			        {name: 'email', index: 'email', editable: true},
 			        {name: 'login', index: 'login', editable: true},
 			        {name: 'password', index: 'password', hidden: false, editable: false},
 			        {name: 'firstName', index: 'firstName', editable: true},
