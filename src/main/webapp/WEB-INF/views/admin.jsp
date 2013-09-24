@@ -40,6 +40,9 @@
 			  	viewrecords: true, 
 			  	multiselect: true,
 	            multiboxonly: true,
+	            cellEdit: true,
+	            cellsubmit: 'remote',
+	        	cellurl: 'users/update/cell',
 			  	sortorder: 'asc', 
 			  	caption: 'Users'
 	  		});

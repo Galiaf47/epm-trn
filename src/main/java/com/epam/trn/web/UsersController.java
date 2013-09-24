@@ -84,6 +84,32 @@ public class UsersController {
 		usersService.updateUser(newUser);
 	}
 	
+	@RequestMapping(method=RequestMethod.POST, value="/update/cell")
+	public @ResponseBody void updateUser(
+			@RequestParam(required=true)  String oper,
+			@RequestParam(required=true)  Integer id, 
+			@RequestParam(required=false) String email,
+			@RequestParam(required=false) String login,
+			@RequestParam(required=false) String password,
+			@RequestParam(required=false) String firstName,
+			@RequestParam(required=false) String lastName,
+			@RequestParam(required=false) String address,
+			@RequestParam(required=false) String phone,
+			@RequestParam(required=false) Boolean isActive) throws NoSuchAlgorithmException {
+		
+		User newUser = new User();
+		newUser.setId(id);
+		newUser.setEmail(email);
+		newUser.setLogin(login);
+		newUser.setPassword(password);
+		newUser.setFirstName(firstName);
+		newUser.setLastName(lastName);
+		newUser.setAddress(address);
+		newUser.setPhone(phone);
+		newUser.setIsActive(isActive);
+		//usersService.updateUser(newUser);
+	}
+	
 	@RequestMapping(method=RequestMethod.POST, value="/delete")
 	public @ResponseBody void deleteUser(@RequestParam String id) {
 		usersService.deleteUsers(id);
