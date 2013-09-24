@@ -35,21 +35,31 @@ public class UsersService {
 		userDao.insert(user);
 	}
 	
-	public void updateUser(User user) throws NoSuchAlgorithmException {
+	public void updateUser(User user) {
 		User existingUser = userDao.findById(user.getId());
 	
 		if(existingUser != null) {
-			byte[] digest = MessageDigest.getInstance("MD5").digest(Utf8.encode(user.getPassword()));
-			String hashedPassword = Utf8.decode(Base64.encode(digest));
-			
-			existingUser.setEmail(user.getEmail());
-			existingUser.setLogin(user.getLogin());
-			existingUser.setPassword(hashedPassword);
-			existingUser.setFirstName(user.getFirstName());
-			existingUser.setLastName(user.getLastName());
-			existingUser.setAddress(user.getAddress());
-			existingUser.setPhone(user.getPhone());
-			existingUser.setIsActive(user.getIsActive());
+			if(user.getEmail() != null) {
+				existingUser.setEmail(user.getEmail());
+			}
+			if(user.getLogin() != null) {
+				existingUser.setLogin(user.getLogin());
+			}
+			if(user.getFirstName() != null) {
+				existingUser.setFirstName(user.getFirstName());
+			}
+			if(user.getLastName() != null) {
+				existingUser.setLastName(user.getLastName());
+			}
+			if(user.getAddress() != null) {
+				existingUser.setAddress(user.getAddress());
+			}
+			if(user.getPhone() != null) {
+				existingUser.setPhone(user.getPhone());
+			}
+			if(user.getIsActive() != null) {
+				existingUser.setIsActive(user.getIsActive());
+			}
 			
 			userDao.updateUser(user);
 		}

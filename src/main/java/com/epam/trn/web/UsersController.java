@@ -63,7 +63,6 @@ public class UsersController {
 				@RequestParam Integer id, 
 				@RequestParam String email,
 				@RequestParam String login,
-				@RequestParam String password,
 				@RequestParam String firstName,
 				@RequestParam String lastName,
 				@RequestParam String address,
@@ -74,7 +73,6 @@ public class UsersController {
 		newUser.setId(id);
 		newUser.setEmail(email);
 		newUser.setLogin(login);
-		newUser.setPassword(password);
 		newUser.setFirstName(firstName);
 		newUser.setLastName(lastName);
 		newUser.setAddress(address);
@@ -90,24 +88,22 @@ public class UsersController {
 			@RequestParam(required=true)  Integer id, 
 			@RequestParam(required=false) String email,
 			@RequestParam(required=false) String login,
-			@RequestParam(required=false) String password,
 			@RequestParam(required=false) String firstName,
 			@RequestParam(required=false) String lastName,
 			@RequestParam(required=false) String address,
 			@RequestParam(required=false) String phone,
-			@RequestParam(required=false) Boolean isActive) throws NoSuchAlgorithmException {
+			@RequestParam(required=false) Boolean isActive) {
 		
 		User newUser = new User();
 		newUser.setId(id);
 		newUser.setEmail(email);
 		newUser.setLogin(login);
-		newUser.setPassword(password);
 		newUser.setFirstName(firstName);
 		newUser.setLastName(lastName);
 		newUser.setAddress(address);
 		newUser.setPhone(phone);
 		newUser.setIsActive(isActive);
-		//usersService.updateUser(newUser);
+		usersService.updateUser(newUser);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/delete")

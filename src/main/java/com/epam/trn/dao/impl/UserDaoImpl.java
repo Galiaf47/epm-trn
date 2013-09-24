@@ -158,8 +158,41 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	
 	@Override
 	public Boolean updateUser(User user) {
-		String sql = "UPDATE USERS SET (LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE, EMAIL) = (?, ?, ?, ?, ?, ?, ?, ?) WHERE ID = ?";
-		return getJdbcTemplate().update(sql, new Object[]{user.getLogin(), user.getPassword(), user.getFirstName(), user.getLastName(), user.getAddress(), user.getPhone(), user.getIsActive(), user.getEmail(), user.getId()}) > 0;
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("id", user.getId());
+		String fields = "";
+		if(user.getEmail() != null) {
+			fields += "EMAIL = :email, ";
+			parameters.addValue("email", user.getEmail());
+		}
+		if(user.getLogin() != null) {
+			fields += "LOGIN = :login, ";
+			parameters.addValue("login", user.getLogin());
+		}
+		if(user.getFirstName() != null) {
+			fields += "FIRSTNAME = :firstname, ";
+			parameters.addValue("firstname", user.getFirstName());
+		}
+		if(user.getLastName() != null) {
+			fields += "LASTNAME = :lastname, ";
+			parameters.addValue("lastname", user.getLastName());
+		}
+		if(user.getAddress() != null) {
+			fields += "ADDRESS = :address, ";
+			parameters.addValue("address", user.getAddress());
+		}
+		if(user.getPhone() != null) {
+			fields += "PHONE = :phone, ";
+			parameters.addValue("phone", user.getPhone());
+		}
+		if(user.getIsActive() != null) {
+			fields += "ACTIVE = :active, ";
+			parameters.addValue("active", user.getIsActive());
+		}
+		
+		fields = fields.replaceAll(", $", "");
+		String sql = "UPDATE USERS SET " + fields + " WHERE ID = :id";
+		return template.update(sql, parameters) > 0;
 	}
 
 	@Override

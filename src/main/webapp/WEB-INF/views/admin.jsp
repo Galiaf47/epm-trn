@@ -21,12 +21,11 @@
 	  		    editurl:"users",
 				datatype: "json",
 			  	mtype: "GET", 
-			  	colNames: ['id', 'email', 'login', 'password', 'firstName', 'lastName', 'address', 'phone', 'isActive'], 
+			  	colNames: ['id', 'email', 'login', 'firstName', 'lastName', 'address', 'phone', 'isActive'], 
 			  	colModel: [ 
 	            	{name: 'id', index: 'id', editable: false}, 
 			        {name: 'email', index: 'email', editable: true},
 			        {name: 'login', index: 'login', editable: true},
-			        {name: 'password', index: 'password', hidden:true, editable: true, edittype:'password', editrules:{edithidden:true}},
 			        {name: 'firstName', index: 'firstName', editable: true},
 			        {name: 'lastName', index: 'lastName', editable: true},
 			        {name: 'address', index: 'address', editable: true},
