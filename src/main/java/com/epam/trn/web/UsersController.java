@@ -38,7 +38,6 @@ public class UsersController {
 	public @ResponseBody void createUser(
 				@RequestParam(required=true) String email,
 				@RequestParam(required=false) String login,
-				@RequestParam(required=false) String password,
 				@RequestParam(required=false) String firstName,
 				@RequestParam(required=false) String lastName,
 				@RequestParam(required=false) String address,
@@ -48,7 +47,6 @@ public class UsersController {
 		User newUser = new User();
 		newUser.setEmail(email);
 		newUser.setLogin(login);
-		newUser.setPassword(password);
 		newUser.setFirstName(firstName);
 		newUser.setLastName(lastName);
 		newUser.setAddress(address);
@@ -59,32 +57,7 @@ public class UsersController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/update")
-	public @ResponseBody void updateUser(	
-				@RequestParam Integer id, 
-				@RequestParam String email,
-				@RequestParam String login,
-				@RequestParam String firstName,
-				@RequestParam String lastName,
-				@RequestParam String address,
-				@RequestParam String phone,
-				@RequestParam Boolean isActive) throws NoSuchAlgorithmException {
-		
-		User newUser = new User();
-		newUser.setId(id);
-		newUser.setEmail(email);
-		newUser.setLogin(login);
-		newUser.setFirstName(firstName);
-		newUser.setLastName(lastName);
-		newUser.setAddress(address);
-		newUser.setPhone(phone);
-		newUser.setIsActive(isActive);
-		
-		usersService.updateUser(newUser);
-	}
-	
-	@RequestMapping(method=RequestMethod.POST, value="/update/cell")
 	public @ResponseBody void updateUser(
-			@RequestParam(required=true)  String oper,
 			@RequestParam(required=true)  Integer id, 
 			@RequestParam(required=false) String email,
 			@RequestParam(required=false) String login,
@@ -103,6 +76,7 @@ public class UsersController {
 		newUser.setAddress(address);
 		newUser.setPhone(phone);
 		newUser.setIsActive(isActive);
+		
 		usersService.updateUser(newUser);
 	}
 	

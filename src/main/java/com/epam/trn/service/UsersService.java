@@ -4,6 +4,7 @@ package com.epam.trn.service;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.codec.Base64;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.codec.Utf8;
 import org.springframework.stereotype.Service;
 
 import com.epam.trn.dao.UserDao;
+import com.epam.trn.mailing.Mail;
 import com.epam.trn.model.User;
 import com.epam.trn.web.grid.Grid;
 
@@ -24,15 +26,21 @@ public class UsersService {
 	}
 	
 	public void createUser(User user) throws NoSuchAlgorithmException {
-		byte[] digest = MessageDigest.getInstance("MD5").digest(Utf8.encode(user.getPassword()));
+		String tempPassword = UUID.randomUUID().toString();
+		byte[] digest = MessageDigest.getInstance("MD5").digest(Utf8.encode(tempPassword));
 		String hashedPassword = Utf8.decode(Base64.encode(digest));
-
+		
 		user.setPassword(hashedPassword);
 		if(user.getLogin().isEmpty()) {
 			user.setLogin(user.getEmail());
 		}
-		
-		userDao.insert(user);
+
+		//TODO: validate email before sending to avoid unnecessary email limits usage
+		if(Mail.sendRegistrationMessage(user.getEmail(), user.getLogin(), tempPassword)) {
+			userDao.insert(user);
+		} else {
+			//TODO: response
+		}
 	}
 	
 	public void updateUser(User user) {

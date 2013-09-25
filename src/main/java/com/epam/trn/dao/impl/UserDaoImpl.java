@@ -22,7 +22,10 @@ import com.epam.trn.web.grid.impl.SimpleGrid;
 public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	
 	@Autowired
-	NamedParameterJdbcTemplate template;
+	private NamedParameterJdbcTemplate template;
+	private final String USER_UPDATE_FIELDS = "EMAIL = :email, LOGIN = :login, FIRSTNAME = :firstname, LASTNAME = :lastname, ADDRESS = :address, PHONE = :phone, ACTIVE = :active";
+	private final String USER_INSERT_FIELDS = USER_UPDATE_FIELDS + ", PASSWORD = :password"; 
+	private final String USER_SELECT_FIELDS = "ID, EMAIL, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE";
 	
 	//TODO: move classes somewhere else
 	class IdCallback implements PreparedStatementCallback<Integer> {
@@ -66,11 +69,8 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
 	@Override
 	public void insert(User user) {
-		String sql = "INSERT INTO USERS "
-				+ "(LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE, EMAIL) VALUES "
-				+ "(:login, :password, :firstname, :lastname, :address, :phone, :active, :email) "
-				+ "RETURNING ID";
-		
+		String sql = "INSERT INTO USERS " + USER_INSERT_FIELDS + " RETURNING ID";
+//TODO: util		
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("login", user.getLogin());
 		parameters.addValue("password", user.getPassword());
@@ -86,21 +86,28 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
 	@Override
 	public User findByLogin(String login) {
-		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE, EMAIL FROM USERS  WHERE LOGIN = ?";
-		User user = ((User) getJdbcTemplate().queryForObject(sql, new Object[] { login }, new UserRowMapper()));
+		String sql = "SELECT " + USER_SELECT_FIELDS + " FROM USERS WHERE LOGIN = :login";
 
-		return user;
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("login", login);
+		
+		return template.queryForObject(sql, parameters, new UserRowMapper());
 	}
 
 	@Override
 	public User findById(long id) {
-		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE, EMAIL FROM USERS WHERE ID = ?";
-		return (User)getJdbcTemplate().queryForObject(sql, new Object[] {id}, new UserRowMapper());
+		String sql = "SELECT " + USER_SELECT_FIELDS + " FROM USERS WHERE ID = :id";
+
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("id", id);
+		
+		return template.queryForObject(sql, parameters, new UserRowMapper());
 	}
 
 	@Override
 	public List<User> getUsers() {
-		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE, EMAIL FROM USERS";
+		//TODO: deletes
+		String sql = "SELECT " + USER_SELECT_FIELDS + " FROM USERS";
 		return (List<User>) getJdbcTemplate().query(sql, new Object[] {}, new UserRowMapper());
 	}
 
@@ -109,7 +116,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		//TODO: 
 		String sortStatement = "ORDER BY " + sortBy + ' ' + sortDirrection;
 		String countSql = "SELECT COUNT(*) FROM USERS";
-		String sql = "SELECT ID, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE, EMAIL FROM USERS " + sortStatement + " LIMIT ? offset ?";
+		String sql = "SELECT " + USER_SELECT_FIELDS + " FROM USERS " + sortStatement + " LIMIT ? offset ?";
 		
 		int count = getJdbcTemplate().queryForInt(countSql);
 		int offset = rows * (page - 1);
@@ -125,7 +132,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
 	@Override
 	public int getTotal() {
-		// TODO Auto-generated method stub
+		// TODO delete
 		return 0;
 	}
 
@@ -146,6 +153,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
 	@Override
 	public Boolean deleteUsers(ArrayList<Long> ids) {
+		//TODO: cascade
 		String sqlRoles = "DELETE FROM USER_ROLES WHERE USER_ID IN (:ids)";
 		String sqlUsers = "DELETE FROM USERS WHERE ID IN (:ids)";
 		
@@ -158,40 +166,17 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	
 	@Override
 	public Boolean updateUser(User user) {
+		String sql = "UPDATE USERS SET " + USER_UPDATE_FIELDS + " WHERE ID = :id";
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("id", user.getId());
-		String fields = "";
-		if(user.getEmail() != null) {
-			fields += "EMAIL = :email, ";
-			parameters.addValue("email", user.getEmail());
-		}
-		if(user.getLogin() != null) {
-			fields += "LOGIN = :login, ";
-			parameters.addValue("login", user.getLogin());
-		}
-		if(user.getFirstName() != null) {
-			fields += "FIRSTNAME = :firstname, ";
-			parameters.addValue("firstname", user.getFirstName());
-		}
-		if(user.getLastName() != null) {
-			fields += "LASTNAME = :lastname, ";
-			parameters.addValue("lastname", user.getLastName());
-		}
-		if(user.getAddress() != null) {
-			fields += "ADDRESS = :address, ";
-			parameters.addValue("address", user.getAddress());
-		}
-		if(user.getPhone() != null) {
-			fields += "PHONE = :phone, ";
-			parameters.addValue("phone", user.getPhone());
-		}
-		if(user.getIsActive() != null) {
-			fields += "ACTIVE = :active, ";
-			parameters.addValue("active", user.getIsActive());
-		}
-		
-		fields = fields.replaceAll(", $", "");
-		String sql = "UPDATE USERS SET " + fields + " WHERE ID = :id";
+		parameters.addValue("login", user.getLogin());
+		parameters.addValue("firstname", user.getFirstName());
+		parameters.addValue("lastname", user.getLastName());
+		parameters.addValue("address", user.getAddress());
+		parameters.addValue("phone", user.getPhone());
+		parameters.addValue("active", user.getIsActive());
+		parameters.addValue("email", user.getEmail());
+
 		return template.update(sql, parameters) > 0;
 	}
 

@@ -23,7 +23,7 @@ public class Mail {
 	private static final String MAIL_SUBJECT_REGISTRATION = "You registered in epm-trn";
 	private static final String MAIL_TEXT_REGISTRATION = "";
 	
-	public static ClientResponse sendRegistrationMessage(String mailTo, String login, String password) {
+	public static Boolean sendRegistrationMessage(String mailTo, String login, String password) {
 	    Client client = Client.create();
 	    client.addFilter(new HTTPBasicAuthFilter("api", API_KEY));
 	    WebResource webResource = client.resource(DOMAIN_URL);
@@ -34,6 +34,7 @@ public class Mail {
 	    formData.add("subject", MAIL_SUBJECT_REGISTRATION);
 	    formData.add("text", MAIL_TEXT_REGISTRATION + "Login: " + login + "\nPassword: " + password);
 	   
-	    return webResource.type(MediaType.APPLICATION_FORM_URLENCODED).post(ClientResponse.class, formData);
+	    ClientResponse response = webResource.type(MediaType.APPLICATION_FORM_URLENCODED).post(ClientResponse.class, formData);
+	    return response.getStatus() == 200;
 	}
 }

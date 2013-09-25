@@ -41,12 +41,12 @@
 	            multiboxonly: true,
 	            cellEdit: true,
 	            cellsubmit: 'remote',
-	        	cellurl: 'users/update/cell',
+	        	cellurl: 'users/update',
 			  	sortorder: 'asc', 
 			  	caption: 'Users'
 	  		});
 			
-			$("#adminGrid").jqGrid('navGrid','#adminPager',{edit: true, add: true, del: true}, {url: 'users/update'}, {url: 'users/create'}, {url: 'users/delete'});
+			$("#adminGrid").jqGrid('navGrid','#adminPager',{edit: false, add: true, del: true}, {url: 'users/update'}, {url: 'users/create'}, {url: 'users/delete'});
 		});
 	</script>	
 </head>
