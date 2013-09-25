@@ -69,7 +69,7 @@ public class UsersService {
 				existingUser.setIsActive(user.getIsActive());
 			}
 			
-			userDao.updateUser(user);
+			userDao.updateUser(existingUser);
 		}
 	}
 	
