@@ -9,7 +9,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 @XmlRootElement
 public class User {
-	private Integer id;
+	private Long id;
 	private String login;
 	@JsonIgnore
 	private String password;
@@ -22,11 +22,11 @@ public class User {
 
 	private List<UserRole> roles = new ArrayList<UserRole>();
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

@@ -1,20 +1,20 @@
 package com.epam.trn.dao.impl;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import com.epam.trn.dao.UserDao;
+import com.epam.trn.dao.utils.IdCallback;
+import com.epam.trn.dao.utils.UserResultExtractor;
+import com.epam.trn.dao.utils.UserRowMapper;
 import com.epam.trn.model.User;
 import com.epam.trn.model.UserRole;
 import com.epam.trn.web.grid.impl.SimpleGrid;
@@ -23,24 +23,14 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	
 	@Autowired
 	private NamedParameterJdbcTemplate template;
-	private final String USER_UPDATE_FIELDS = "EMAIL = :email, LOGIN = :login, FIRSTNAME = :firstname, LASTNAME = :lastname, ADDRESS = :address, PHONE = :phone, ACTIVE = :active";
-	private final String USER_INSERT_FIELDS = USER_UPDATE_FIELDS + ", PASSWORD = :password"; 
-	private final String USER_SELECT_FIELDS = "ID, EMAIL, LOGIN, PASSWORD, FIRSTNAME, LASTNAME, ADDRESS, PHONE, ACTIVE";
+	
+	private final String USER_UPDATE_FIELDS = "email, login, firstname, lastname, address, phone, active";
+	private final String USER_UPDATE_VALUES = ":email, :login, :firstname, :lastname, :address, :phone, :active";
+	private final String USER_INSERT_FIELDS = USER_UPDATE_FIELDS + ", password"; 
+	private final String USER_INSERT_VALUES = USER_UPDATE_VALUES + ", :password";
+	private final String USER_SELECT_FIELDS = "id, " + USER_INSERT_FIELDS;
 	
 	//TODO: move classes somewhere else
-	class IdCallback implements PreparedStatementCallback<Integer> {
-		@Override
-		public Integer doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
-			int result = 0;
-			ResultSet rs = ps.executeQuery();
-		    if(rs.next()) {
-		    	result =  rs.getInt("ID");
-		    }
-		    rs.close();
-		    return result;
-		}
-	}
-
 	class UserRoleRowMapper implements RowMapper<UserRole> {
 		public UserRole mapRow(ResultSet rs, int rowNum) throws SQLException {
 			UserRole userRole = new UserRole();
@@ -51,25 +41,9 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		}
 	}
 
-	class UserRowMapper implements RowMapper<User> {
-		public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-			User user = new User();
-			user.setId(rs.getInt("ID"));
-			user.setLogin(rs.getString("LOGIN"));
-			user.setPassword(rs.getString("PASSWORD"));
-			user.setFirstName(rs.getString("FIRSTNAME"));
-			user.setLastName(rs.getString("LASTNAME"));
-			user.setAddress(rs.getString("ADDRESS"));
-			user.setPhone(rs.getString("PHONE"));
-			user.setIsActive(rs.getBoolean("ACTIVE"));
-			user.setEmail(rs.getString("EMAIL"));
-			return user;
-		}
-	}
-
 	@Override
 	public void insert(User user) {
-		String sql = "INSERT INTO USERS " + USER_INSERT_FIELDS + " RETURNING ID";
+		String sql = "INSERT INTO USERS (" + USER_INSERT_FIELDS + ") VALUES (" + USER_INSERT_VALUES + ") RETURNING ID";
 //TODO: util		
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("login", user.getLogin());
@@ -93,7 +67,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		
 		return template.queryForObject(sql, parameters, new UserRowMapper());
 	}
-
+	
 	@Override
 	public User findById(long id) {
 		String sql = "SELECT " + USER_SELECT_FIELDS + " FROM USERS WHERE ID = :id";
@@ -116,13 +90,18 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		//TODO: 
 		String sortStatement = "ORDER BY " + sortBy + ' ' + sortDirrection;
 		String countSql = "SELECT COUNT(*) FROM USERS";
-		String sql = "SELECT " + USER_SELECT_FIELDS + " FROM USERS " + sortStatement + " LIMIT ? offset ?";
+		//select users.id, users.login, roles.name, roles.id from users LEFT OUTER join (USER_ROLES join roles on USER_ROLES.role_id = roles.Id) on USER_ROLES.user_id = users.id order by users.id limit 10 offset 0
+		String sql = "SELECT u.id, u.email, u.login, u.firstname, u.lastname, u.address, u.phone, u.active, roles.name AS role_name FROM users AS u LEFT OUTER JOIN (user_roles JOIN roles ON user_roles.role_id = roles.Id) ON user_roles.user_id = u.id " + sortStatement + " LIMIT :limit OFFSET :offset";
 		
 		int count = getJdbcTemplate().queryForInt(countSql);
 		int offset = rows * (page - 1);
 		int totalPages = (int)Math.ceil((double)count / rows); 
-		
-		SimpleGrid<User> result = new SimpleGrid<User>(getJdbcTemplate().query(sql, new Object[] {rows, offset}, new UserRowMapper()));
+
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("limit", rows);
+		parameters.addValue("offset", offset);
+		SimpleGrid<User> result = new SimpleGrid<User>(template.query(sql, parameters, new UserResultExtractor()));
+	
 		result.setTotal(totalPages);
 		result.setPage(page);
 		result.setRecords(count);
@@ -137,7 +116,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	}
 
 	@Override
-	public List<UserRole> getUserRoles(Integer userId) {
+	public List<UserRole> getUserRoles(Long userId) {
 		String sql = "SELECT ID, USER_ID, NAME FROM USER_ROLES WHERE USER_ID = ?";
 		List<UserRole> userRoles = (List<UserRole>) getJdbcTemplate().query(
 				sql, new Object[] { userId }, new UserRoleRowMapper());
@@ -166,7 +145,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	
 	@Override
 	public Boolean updateUser(User user) {
-		String sql = "UPDATE USERS SET " + USER_UPDATE_FIELDS + " WHERE ID = :id";
+		String sql = "UPDATE USERS SET (" + USER_UPDATE_FIELDS + ") = (" + USER_UPDATE_VALUES + ") WHERE ID = :id";
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("id", user.getId());
 		parameters.addValue("login", user.getLogin());

@@ -26,7 +26,7 @@ public interface UserDao {
 
 	public void insertUserRoles(User user);
 	
-	public List<UserRole> getUserRoles(Integer userId);
+	public List<UserRole> getUserRoles(Long userId);
 
 	public int getTotal();
 }

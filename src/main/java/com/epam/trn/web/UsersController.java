@@ -58,7 +58,7 @@ public class UsersController {
 	
 	@RequestMapping(method=RequestMethod.POST, value="/update")
 	public @ResponseBody void updateUser(
-			@RequestParam(required=true)  Integer id, 
+			@RequestParam(required=true)  Long id, 
 			@RequestParam(required=false) String email,
 			@RequestParam(required=false) String login,
 			@RequestParam(required=false) String firstName,
