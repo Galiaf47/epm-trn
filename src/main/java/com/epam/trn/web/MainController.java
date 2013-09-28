@@ -25,6 +25,11 @@ public class MainController {
 		return "students";
 	}
 
+	@RequestMapping("/coursespage")
+	public String getCoursestPage(Map<String, Object> map) {
+		return "courses";
+	}
+	
 	@RequestMapping("/")
 	public String home() {
 		if (AuthService.hasAdminRole())
