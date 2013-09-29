@@ -21,7 +21,7 @@
 	  		    editurl:"users",
 				datatype: "json",
 			  	mtype: "GET", 
-			  	colNames: ['id', 'email', 'login', 'firstName', 'lastName', 'address', 'phone', 'isActive'], 
+			  	colNames: ['id', 'email', 'login', 'firstName', 'lastName', 'address', 'phone', 'isActive', 'role'], 
 			  	colModel: [ 
 	            	{name: 'id', index: 'id', editable: false}, 
 			        {name: 'email', index: 'email', editable: true},
@@ -30,7 +30,8 @@
 			        {name: 'lastName', index: 'lastName', editable: true},
 			        {name: 'address', index: 'address', editable: true},
 			        {name: 'phone', index: 'phone', editable: true},
-			        {name: 'isActive', index: 'isActive', editable: true}
+			        {name: 'isActive', index: 'isActive', editable: true},
+			        {name: 'role', index: 'role', editable: false}
 				],
 				rowNum:10,
 			   	rowList:[10,20,30],

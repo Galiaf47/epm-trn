@@ -38,4 +38,9 @@ public class UserRole {
 	    
 	    return this.name.equals(otherUserRole.getName());
 	}
+	
+	@Override
+	public String toString() {
+		return this.name;
+	}
 }

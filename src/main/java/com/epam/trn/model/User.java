@@ -54,6 +54,12 @@ public class User {
 		this.isActive = isActive;
 	}
 
+	public String getRole() {
+		String result = this.roles.isEmpty() ? "None" : this.roles.toString()
+				.replaceAll(", ", "\n").replaceAll("\\[", "").replaceAll("\\]", "");
+		return result;
+	}
+	
 	public List<UserRole> getRoles() {
 		return roles;
 	}
@@ -107,5 +113,4 @@ public class User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
 }
