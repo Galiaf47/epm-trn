@@ -43,6 +43,7 @@
 	            cellEdit: true,
 	            cellsubmit: 'remote',
 	        	cellurl: 'users/update',
+	        	loadonce: true,
 			  	sortorder: 'asc', 
 			  	caption: 'Users'
 	  		});

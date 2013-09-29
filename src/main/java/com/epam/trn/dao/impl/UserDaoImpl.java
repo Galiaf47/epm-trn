@@ -29,6 +29,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	private final String USER_INSERT_FIELDS = USER_UPDATE_FIELDS + ", password"; 
 	private final String USER_INSERT_VALUES = USER_UPDATE_VALUES + ", :password";
 	private final String USER_SELECT_FIELDS = "id, " + USER_INSERT_FIELDS;
+	private final String USER_WITH_ROLES_QUERY = "SELECT u.id, u.email, u.login, u.password, u.firstname, u.lastname, u.address, u.phone, u.active, roles.name AS role_name FROM users AS u LEFT OUTER JOIN (user_roles JOIN roles ON user_roles.role_id = roles.Id) ON user_roles.user_id = u.id ";
 	
 	//TODO: move classes somewhere else
 	class UserRoleRowMapper implements RowMapper<UserRole> {
@@ -60,12 +61,13 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 
 	@Override
 	public User findByLogin(String login) {
-		String sql = "SELECT " + USER_SELECT_FIELDS + " FROM USERS WHERE LOGIN = :login";
+		String sql = USER_WITH_ROLES_QUERY + " WHERE LOGIN = :login";
 
 		MapSqlParameterSource parameters = new MapSqlParameterSource();
 		parameters.addValue("login", login);
 		
-		return template.queryForObject(sql, parameters, new UserRowMapper());
+		List<User> result = template.query(sql, parameters, new UserResultExtractor());
+		return result.isEmpty() ? null : result.get(0);
 	}
 	
 	@Override
@@ -91,7 +93,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		String sortStatement = "ORDER BY " + sortBy + ' ' + sortDirrection;
 		String countSql = "SELECT COUNT(*) FROM USERS";
 		//select users.id, users.login, roles.name, roles.id from users LEFT OUTER join (USER_ROLES join roles on USER_ROLES.role_id = roles.Id) on USER_ROLES.user_id = users.id order by users.id limit 10 offset 0
-		String sql = "SELECT u.id, u.email, u.login, u.firstname, u.lastname, u.address, u.phone, u.active, roles.name AS role_name FROM users AS u LEFT OUTER JOIN (user_roles JOIN roles ON user_roles.role_id = roles.Id) ON user_roles.user_id = u.id " + sortStatement + " LIMIT :limit OFFSET :offset";
+		String sql = USER_WITH_ROLES_QUERY + sortStatement + " LIMIT :limit OFFSET :offset";
 		
 		int count = getJdbcTemplate().queryForInt(countSql);
 		int offset = rows * (page - 1);
