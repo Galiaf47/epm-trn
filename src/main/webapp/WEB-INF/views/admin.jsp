@@ -23,16 +23,17 @@
 			  	mtype: "GET", 
 			  	colNames: ['id', 'email', 'login', 'firstName', 'lastName', 'address', 'phone', 'isActive', 'role'], 
 			  	colModel: [ 
-	            	{name: 'id', index: 'id', editable: false}, 
+	            	{name: 'id', index: 'id', width: 25, editable: false}, 
 			        {name: 'email', index: 'email', editable: true},
 			        {name: 'login', index: 'login', editable: true},
 			        {name: 'firstName', index: 'firstName', editable: true},
 			        {name: 'lastName', index: 'lastName', editable: true},
 			        {name: 'address', index: 'address', editable: true},
 			        {name: 'phone', index: 'phone', editable: true},
-			        {name: 'isActive', index: 'isActive', editable: true},
-			        {name: 'role', index: 'role', editable: false}
+			        {name: 'isActive', index: 'isActive', width: 50, align: 'center', editable: true, edittype: 'checkbox', formatter: 'checkbox'},
+			        {name: 'role', index: 'role', editable: true, edittype: 'select', editoptions: {dataUrl: 'users/roles', multiple: true}}
 				],
+				ajaxSelectOptions: {},
 				rowNum:10,
 			   	rowList:[10,20,30],
 			   	pager: '#adminPager',
@@ -43,7 +44,7 @@
 	            cellEdit: true,
 	            cellsubmit: 'remote',
 	        	cellurl: 'users/update',
-	        	loadonce: true,
+	        	loadonce: false,
 			  	sortorder: 'asc', 
 			  	caption: 'Users'
 	  		});

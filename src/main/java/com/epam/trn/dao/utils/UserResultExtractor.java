@@ -53,10 +53,10 @@ public class UserResultExtractor implements ResultSetExtractor<List<User>>{
 				resultMap.put(user.getId(), user);
 			}
 			
-			String roleName = (String)columns.get(ROLE_NAME);
-			if(roleName != null) {
-				UserRole role = new UserRole();
-				role.setName(roleName);
+			UserRole role = new UserRole();
+			role.setId((Long)columns.get(ROLE_ID));
+			role.setName((String)columns.get(ROLE_NAME));
+			if(role.getId() != null || role.getName() != null) {
 				user.addRole(role);
 			}
 		}

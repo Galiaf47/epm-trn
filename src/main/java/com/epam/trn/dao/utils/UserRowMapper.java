@@ -27,6 +27,7 @@ public class UserRowMapper implements RowMapper<User> {
 	public static final String USER_PHONE = "phone";
 	public static final String USER_ACTIVE = "active";
 	public static final String ROLE_NAME = "role_name";
+	public static final String ROLE_ID = "role_id";
 	
 	public User mapRow(ResultSet rs, int rowNum) throws SQLException {
 		HashMap<String, Object> columns = new HashMap<String, Object>();

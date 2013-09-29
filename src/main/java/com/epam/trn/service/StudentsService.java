@@ -77,7 +77,6 @@ public class StudentsService {
 		newUser.addRole(role);
 
 		userDao.insert(newUser);
-		userDao.insertUserRoles(newUser);
 		
 		Mail.sendRegistrationMessage(email, login, tempPassword);
 		

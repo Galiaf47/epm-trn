@@ -56,12 +56,12 @@ public class User {
 
 	public String getRole() {
 		String result = this.roles.isEmpty() ? "None" : this.roles.toString()
-				.replaceAll(", ", "\n").replaceAll("\\[", "").replaceAll("\\]", "");
+				.replaceAll("\\[", "").replaceAll("\\]", "");
 		return result;
 	}
 	
 	public List<UserRole> getRoles() {
-		return roles;
+		return this.roles;
 	}
 
 	public void addRole(UserRole role) {

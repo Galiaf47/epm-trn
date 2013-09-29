@@ -1,6 +1,7 @@
 package com.epam.trn.web;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,8 @@ public class UsersController {
 				@RequestParam(required=false) String lastName,
 				@RequestParam(required=false) String address,
 				@RequestParam(required=false) String phone,
-				@RequestParam(required=false) Boolean isActive) throws NoSuchAlgorithmException {
+				@RequestParam(required=false) Boolean isActive,
+				@RequestParam(value="role", required=false) List<Long> roles) throws NoSuchAlgorithmException {
 		
 		User newUser = new User();
 		newUser.setEmail(email);
@@ -54,9 +56,10 @@ public class UsersController {
 		newUser.setIsActive(isActive);
 		
 		usersService.createUser(newUser);
+		usersService.updateRoles(newUser.getId(), newUser.getRoles(), roles);
 	}
 	
-	@RequestMapping(method=RequestMethod.POST, value="/update")
+	@RequestMapping(method=RequestMethod.POST, value="/update", headers="Accept=application/json")
 	public @ResponseBody void updateUser(
 			@RequestParam(required=true)  Long id, 
 			@RequestParam(required=false) String email,
@@ -65,7 +68,8 @@ public class UsersController {
 			@RequestParam(required=false) String lastName,
 			@RequestParam(required=false) String address,
 			@RequestParam(required=false) String phone,
-			@RequestParam(required=false) Boolean isActive) {
+			@RequestParam(required=false) Boolean isActive,
+			@RequestParam(value="role[]", required=false) List<Long> roles) {
 		
 		User newUser = new User();
 		newUser.setId(id);
@@ -77,11 +81,16 @@ public class UsersController {
 		newUser.setPhone(phone);
 		newUser.setIsActive(isActive);
 		
-		usersService.updateUser(newUser);
+		usersService.updateUser(newUser, roles);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/delete")
 	public @ResponseBody void deleteUser(@RequestParam String id) {
 		usersService.deleteUsers(id);
+	}
+	
+	@RequestMapping(method=RequestMethod.GET, value="/roles")
+	public @ResponseBody String getRoles() {
+		return usersService.getRoles();
 	}
 }

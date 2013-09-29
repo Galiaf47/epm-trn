@@ -1,14 +1,14 @@
 package com.epam.trn.model;
 
 public class UserRole {
-	private Integer id;
+	private Long id;
 	private String name;
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -22,12 +22,14 @@ public class UserRole {
 	
 	@Override
 	public boolean equals(Object other) {
-	    if (other == null) return false;
-	    if (other == this) return true;
-	    if (!(other instanceof UserRole))return false;
+	    if(other == null) return false;
+	    if(other == this) return true;
+	    if(!(other instanceof UserRole))return false;
 	    UserRole otherUserRole = (UserRole)other;
+	    if(this.id != null && this.id.equals(otherUserRole.getId())) return true;
+	    if(this.name != null && this.name.equals(otherUserRole.getName())) return true;
 	    
-	    return this.name.equals(otherUserRole.getName());
+	    return false;
 	}
 	
 	@Override
