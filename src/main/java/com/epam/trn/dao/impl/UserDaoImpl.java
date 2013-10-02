@@ -25,6 +25,7 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 	private static final String USER_UPDATE_VALUES = ":email, :login, :firstname, :lastname, :address, :phone, :active";
 	private static final String USER_INSERT_FIELDS = USER_UPDATE_FIELDS + ", password"; 
 	private static final String USER_INSERT_VALUES = USER_UPDATE_VALUES + ", :password";
+	private static final String USER_SELECT_FIELDS = "id, " + USER_INSERT_FIELDS;
 	private static final String USER_WITH_ROLES_QUERY = "SELECT u.id, u.email, u.login, u.password, u.firstname, u.lastname, u.address, u.phone, u.active, roles.name AS role_name, roles.id AS role_id FROM users AS u LEFT OUTER JOIN (user_roles JOIN roles ON user_roles.role_id = roles.Id) ON user_roles.user_id = u.id ";
 	private static final String ROLE_SELECT_QUERY = "SELECT id, name FROM roles";
 
@@ -103,7 +104,24 @@ public class UserDaoImpl extends JdbcDaoSupport implements UserDao {
 		//TODO: prepared sortStatement
 		String sortStatement = "ORDER BY " + sortBy + ' ' + sortDirrection;
 		String countSql = "SELECT COUNT(*) FROM USERS";
-		String sql = USER_WITH_ROLES_QUERY + sortStatement + " LIMIT :limit OFFSET :offset";
+		String sql = 
+			"SELECT "
+				+ "u.*, "
+				+ "roles.name AS role_name, "
+				+ "roles.id AS role_id "
+			+ "FROM ("
+				+ "SELECT " 
+					+ USER_SELECT_FIELDS 
+				+ " FROM "
+					+ "users " 
+						+ sortStatement // sorting for pagination
+						+ " LIMIT :limit OFFSET :offset"
+			+ ") AS u "
+			+ "LEFT OUTER JOIN (user_roles "
+				+ "JOIN roles "
+				+ "ON user_roles.role_id = roles.Id) "
+			+ "ON user_roles.user_id = u.id "
+			+ sortStatement; // the same sorting for result list
 		
 		int count = getJdbcTemplate().queryForInt(countSql);
 		int offset = rows * (page - 1);

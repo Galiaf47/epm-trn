@@ -6,8 +6,8 @@ package com.epam.trn.dao.utils;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.springframework.dao.DataAccessException;
@@ -26,10 +26,10 @@ public class UserResultExtractor implements ResultSetExtractor<List<User>>{
 
 	@Override
 	public List<User> extractData(ResultSet rs) throws SQLException, DataAccessException {
-		HashMap<Long, User> resultMap = new HashMap<Long, User>();
+		LinkedHashMap<Long, User> resultMap = new LinkedHashMap<Long, User>();
 
 		while(rs.next()) {
-			HashMap<String, Object> columns = new HashMap<String, Object>();
+			LinkedHashMap<String, Object> columns = new LinkedHashMap<String, Object>();
 			ResultSetMetaData meta = rs.getMetaData();
 			for(int i = 1; i < meta.getColumnCount() + 1; i++) {
 				String label = meta.getColumnLabel(i);
