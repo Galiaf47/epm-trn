@@ -55,8 +55,8 @@ public class User {
 	}
 
 	public String getRole() {
-		String result = this.roles.isEmpty() ? "None" : this.roles.toString()
-				.replaceAll("\\[", "").replaceAll("\\]", "");
+		String result = this.roles.isEmpty() ? "" : this.roles.toString()
+				.replaceAll("\\[", "").replaceAll("\\]", "").replaceAll(", ", ",");
 		return result;
 	}
 	
